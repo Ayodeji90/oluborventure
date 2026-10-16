@@ -1,73 +1,163 @@
 @import "tailwindcss";
 
 :root {
-  --primary-purple: #4a1a6b;
-  --primary-purple-light: #6b2d8f;
-  --gold: #ffd700;
-  --orange: #ffa500;
-  --orange-dark: #ff8c00;
-  --gradient-start: #ffd700;
-  --gradient-mid: #ffa500;
-  --gradient-end: #ff8c00;
+  --purple: #2e1247; /* deep aubergine — primary */
+  --purple-mid: #4a1a6b; /* brand purple, secondary uses */
+  --purple-light: #6b2d8f;
+  --plum-50: #f7f3fb;
+  --plum-100: #ece3f4;
+  --amber: #b45309; /* single accent: amber-700, AA on white */
+  --amber-600: #d97706; /* large text / hover only */
+  --sand: #f6f2ec; /* warm neutral surface */
+  --sand-dark: #e8e0d4;
+  --ink: #171017;
+  --ink-2: #4a4252;
+  --ink-3: #726878;
 }
 
 @theme inline {
-  --color-purple: var(--primary-purple);
-  --color-purple-light: var(--primary-purple-light);
-  --color-gold: var(--gold);
-  --color-orange: var(--orange);
-  --color-orange-dark: var(--orange-dark);
-  --color-cream: #fdf8ee;
+  --color-purple: var(--purple);
+  --color-purple-mid: var(--purple-mid);
+  --color-purple-light: var(--purple-light);
+  --color-plum-50: var(--plum-50);
+  --color-plum-100: var(--plum-100);
+  --color-amber: var(--amber);
+  --color-amber-600: var(--amber-600);
+  --color-sand: var(--sand);
+  --color-sand-dark: var(--sand-dark);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
   --font-sans: var(--font-poppins), sans-serif;
+  --font-display-serif: var(--font-playfair), Georgia, serif;
+  --font-lede: var(--font-figtree), sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: #fafafa;
-  color: #171717;
+  background: #fafaf9;
+  color: var(--ink);
   font-family: var(--font-sans), sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-.gradient-bg {
-  background: linear-gradient(
-    135deg,
-    var(--gradient-start) 0%,
-    var(--gradient-mid) 50%,
-    var(--gradient-end) 100%
-  );
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
 }
 
-.gradient-text {
-  background: linear-gradient(
-    135deg,
-    var(--gradient-start) 0%,
-    var(--gradient-mid) 50%,
-    var(--gradient-end) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Type scale: display 1.333 for hero, 1.2 for section titles */
+.text-display {
+  font-size: clamp(2.75rem, 6vw, 4.75rem); /* 44→76px */
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.text-title {
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.text-kicker {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* The ONE gradient moment — reserved for the hero logo chip only */
+.brand-chip {
+  background: linear-gradient(135deg, #ffd700 0%, #ffa500 60%, #ff8c00 100%);
+}
+
+/* Serif statement style — hero headline only */
+.font-statement {
+  font-family: var(--font-display-serif);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Hero-specific typography refinements */
+
+/* Plane-photo hero background: lazy loaded + CSS crossfade cycle */
+.hero-rotator {
+  animation: hero-tint-fade 7s linear infinite;
+}
+
+@keyframes hero-tint-fade {
+  0% {
+    filter: brightness(1) saturate(1);
+    transform: scale(1.01);
+  }
+  10% {
+    filter: brightness(1.04) saturate(1.04);
+    transform: scale(1.015);
+  }
+  90% {
+    filter: brightness(1.04) saturate(1.04);
+    transform: scale(1.015);
+  }
+  100% {
+    filter: brightness(1) saturate(1);
+    transform: scale(1.01);
+  }
+}
+
+.hero-slide {
+  transition: opacity 1.4s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rotator {
+    animation: none;
+    filter: brightness(1);
+    transform: none;
+  }
+  .hero-slide {
+    transition: none;
+  }
+}
+.hero-lede {
+  font-family: var(--font-lede);
+  font-size: clamp(1.0625rem, 1.4vw, 1.1875rem); /* 17→19px */
+  line-height: 1.65;
+}
+
+.hero-stats {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-stats .stat-strong {
+  font-weight: 600;
+  font-size: 1rem;
+  color: rgb(255 255 255 / 0.95);
+}
+
+.hero-stats .stat-label {
+  color: rgb(255 255 255 / 0.75);
 }
 
 .card-hover {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
 }
 
 .card-hover:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 25px 50px rgba(74, 26, 107, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(46, 18, 71, 0.1);
 }
 
-.fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
-}
-
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
+::selection {
+  background: var(--plum-100);
 }
 
 ::-webkit-scrollbar {
@@ -79,11 +169,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    135deg,
-    var(--gradient-start) 0%,
-    var(--gradient-mid) 50%,
-    var(--gradient-end) 100%
-  );
+  background: #c4b5cd;
   border-radius: 5px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
 }

@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowRight } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import WhatsAppButton from "@/components/WhatsAppButton";
+
+const inputCls =
+  "w-full px-4 py-3 min-h-[48px] rounded-lg border border-gray-300 bg-white text-[15px] text-ink focus:border-purple focus:ring-2 focus:ring-purple/20 outline-none transition";
+const labelCls = "block text-sm font-semibold text-ink mb-2";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
@@ -17,71 +21,85 @@ export default function ContactPage() {
   return (
     <>
       <PageHeader
-        crumb="Contact Us"
-        title="Get In Touch"
-        description="Ready to start your journey? Send us a message and we'll respond within 24 hours."
+        crumb="Contact"
+        title="Talk to a counselor."
+        description="Send a message, or call. Either way you get a human within one working day."
       />
       <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12">
-          <div className="space-y-6">
-            {[
-              { Icon: MapPin, title: "Address", value: "Lagos, Nigeria" },
-              { Icon: Mail, title: "Email", value: "info@oluborventures.com" },
-              { Icon: Phone, title: "Phone / WhatsApp", value: "+234 XXX XXX XXXX" },
-            ].map(({ Icon, title, value }) => (
-              <div key={title} className="flex items-center gap-4 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <div className="w-12 h-12 gradient-bg rounded-full flex items-center justify-center shrink-0">
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-purple">{title}</h4>
-                  <p className="text-gray-600">{value}</p>
-                </div>
-              </div>
-            ))}
-            <div className="gradient-bg rounded-2xl p-8 text-white">
-              <h4 className="text-xl font-bold mb-2">Office Hours</h4>
-              <p className="opacity-90 text-sm">Mon – Fri: 9am – 5pm WAT<br />Sat: 10am – 2pm WAT</p>
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-[1fr_1.3fr] gap-16">
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-kicker text-ink-3 mb-3">Direct</h3>
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3"><Phone className="w-4 h-4 text-purple shrink-0" /><span className="text-ink">+234 XXX XXX XXXX</span></li>
+                <li className="flex items-center gap-3"><Mail className="w-4 h-4 text-purple shrink-0" /><span className="text-ink">info@oluborventures.com</span></li>
+                <li className="flex items-center gap-3"><MapPin className="w-4 h-4 text-purple shrink-0" /><span className="text-ink">Lagos, Nigeria</span></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-kicker text-ink-3 mb-3">Office hours</h3>
+              <p className="text-ink-2 text-[15px] leading-relaxed">
+                Monday – Friday: 9am – 5pm WAT<br />
+                Saturday: 10am – 2pm WAT
+              </p>
+            </div>
+            <div className="border-t-2 border-purple pt-6">
+              <h3 className="text-lg font-bold text-ink mb-2">What happens after you write</h3>
+              <p className="text-ink-2 text-[15px] leading-relaxed">
+                A counselor reads your message, then calls or replies with
+                initial options and the next available consultation slot. No
+                sales scripts, no obligations.
+              </p>
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+          <div>
             {sent ? (
-              <div className="text-center py-16">
-                <div className="text-5xl mb-4">🎉</div>
-                <h3 className="text-2xl font-bold text-purple mb-2">Message received!</h3>
-                <p className="text-gray-600">We'll get back to you within 24 hours.</p>
+              <div className="border border-gray-200 rounded-xl p-10 text-left max-w-xl">
+                <div className="w-10 h-10 bg-plum-100 rounded-lg flex items-center justify-center mb-4 text-purple font-bold">✓</div>
+                <h3 className="text-xl font-bold text-ink mb-2">Message received.</h3>
+                <p className="text-ink-2 text-[15px] leading-relaxed mb-6">
+                  We&apos;ll reply within one working day. If it&apos;s urgent, call the number above.
+                </p>
+                <button onClick={() => setSent(false)} className="text-purple font-semibold text-[15px] hover:underline underline-offset-4">
+                  Send another message
+                </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="block text-sm font-semibold text-purple mb-2">Full Name</label>
-                  <input required type="text" placeholder="Your name" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple outline-none transition" />
+              <form onSubmit={handleSubmit} className="space-y-5 max-w-xl">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="c-name" className={labelCls}>Full name</label>
+                    <input id="c-name" required type="text" placeholder="Your name" className={inputCls} />
+                  </div>
+                  <div>
+                    <label htmlFor="c-phone" className={labelCls}>Phone / WhatsApp</label>
+                    <input id="c-phone" type="tel" placeholder="+234 …" className={inputCls} />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-purple mb-2">Email</label>
-                  <input required type="email" placeholder="your@email.com" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple outline-none transition" />
+                  <label htmlFor="c-email" className={labelCls}>Email</label>
+                  <input id="c-email" required type="email" placeholder="your@email.com" className={inputCls} />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-purple mb-2">Phone / WhatsApp</label>
-                  <input type="tel" placeholder="+234 ..." className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple outline-none transition" />
+                  <span className={labelCls}>Service</span>
+                  <div className="flex flex-wrap gap-2">
+                    {["Study Abroad", "Scholarships", "Visa Assistance", "International Jobs", "Other"].map((s) => (
+                      <label key={s} className="cursor-pointer">
+                        <input type="radio" name="service" value={s} className="peer sr-only" required />
+                        <span className="inline-block px-4 min-h-[44px] leading-[44px] rounded-lg border border-gray-300 text-sm text-ink-2 peer-checked:bg-purple peer-checked:text-white peer-checked:border-purple hover:border-purple transition">
+                          {s}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-purple mb-2">Service Interested In</label>
-                  <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple outline-none transition">
-                    <option>Study Abroad</option>
-                    <option>Scholarships</option>
-                    <option>Visa Assistance</option>
-                    <option>International Jobs</option>
-                    <option>Other</option>
-                  </select>
+                  <label htmlFor="c-msg" className={labelCls}>Message</label>
+                  <textarea id="c-msg" required rows={5} placeholder="Tell us about your goals…" className={`${inputCls} h-auto`} />
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-purple mb-2">Message</label>
-                  <textarea required rows={4} placeholder="Tell us about your goals..." className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple outline-none transition" />
-                </div>
-                <button type="submit" className="w-full gradient-bg text-white font-semibold py-4 rounded-full shadow-lg hover:opacity-90 transition flex items-center justify-center gap-2">
-                  <Send className="w-5 h-5" /> Send Message
+                <button type="submit" className="w-full sm:w-auto min-h-[52px] px-8 bg-purple text-white font-semibold rounded-lg hover:bg-purple-mid transition inline-flex items-center gap-2">
+                  Send message <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
             )}

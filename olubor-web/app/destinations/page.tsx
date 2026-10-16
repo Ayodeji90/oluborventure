@@ -1,6 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import CTAButton from "@/components/CTAButton";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { destinations } from "@/data/destinations";
 
 export default function DestinationsPage() {
@@ -8,26 +8,27 @@ export default function DestinationsPage() {
     <>
       <PageHeader
         crumb="Destinations"
-        title="Destinations to Explore"
-        description="Browse popular destinations students love, with routes that fit your budget and goals."
+        title="Where students go."
+        description="Every destination below has a counselor who has completed the process themselves."
       />
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {destinations.map((d) => (
-            <div key={d.name} className="card-hover bg-cream rounded-3xl p-8 border border-orange-100">
-              <span className="text-5xl">{d.flag}</span>
-              <h3 className="text-2xl font-bold text-purple mt-4 mb-2">{d.name}</h3>
-              <p className="text-gray-600 mb-5">{d.tagline}</p>
-              <ul className="space-y-2 mb-6">
-                {d.highlights.map((h) => (
-                  <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
-                    <CheckCircle2 className="w-4 h-4 text-orange" /> {h}
-                  </li>
-                ))}
-              </ul>
-              <CTAButton href="/contact" variant="primary" className="w-full text-sm">Enquire About {d.name} <ArrowRight className="w-4 h-4 ml-1" /></CTAButton>
-            </div>
-          ))}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <ul className="divide-y divide-gray-200 border-t border-gray-200">
+            {destinations.map((d) => (
+              <li key={d.name} className="grid md:grid-cols-[1fr_1.4fr_1fr_auto] items-baseline gap-x-10 py-8">
+                <h2 className="text-2xl font-bold text-ink">{d.name}</h2>
+                <p className="text-ink-2 leading-relaxed">{d.tagline}</p>
+                <span className="text-ink-3 text-sm">{d.highlights.join(" · ")}</span>
+                <Link href="/contact" className="text-amber font-semibold text-[15px] hover:underline underline-offset-4 justify-self-start md:justify-self-end whitespace-nowrap">
+                  Enquire
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-14 flex items-center gap-6 flex-wrap">
+            <p className="text-ink-2">Country not listed? We place into 12 countries.</p>
+            <CTAButton href="/contact" variant="secondary">Ask about yours</CTAButton>
+          </div>
         </div>
       </section>
     </>

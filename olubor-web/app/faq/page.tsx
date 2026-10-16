@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { Plus } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import CTAButton from "@/components/CTAButton";
 
@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: "Can I get a full scholarship?",
-    a: "Full scholarships exist but are competitive. We match you with opportunities that fit your grades, profile, and budget — including partial scholarships and funding combos.",
+    a: "Full scholarships exist but are competitive. We match you with opportunities that fit your grades, profile, and budget — including partial scholarships and funding combinations.",
   },
   {
     q: "Which countries can you help me study in?",
@@ -37,27 +37,28 @@ export default function FAQPage() {
 
   return (
     <>
-      <PageHeader crumb="FAQ" title="Frequently Asked Questions" />
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-3xl mx-auto space-y-4">
+      <PageHeader crumb="FAQ" title="Questions, answered." />
+      <section className="py-20 px-4">
+        <div className="max-w-3xl mx-auto border-t border-gray-200">
           {faqs.map((f, i) => (
-            <div key={i} className="bg-cream rounded-2xl border border-orange-100 overflow-hidden">
+            <div key={i} className="border-b border-gray-200">
               <button
                 onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex justify-between items-center px-6 py-5 text-left font-semibold text-purple"
+                aria-expanded={open === i}
+                className="w-full flex justify-between items-center gap-6 py-5 text-left text-lg font-semibold text-ink hover:text-purple transition min-h-[44px]"
               >
                 {f.q}
-                <ChevronDown className={`w-5 h-5 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`} />
+                <Plus className={`w-5 h-5 shrink-0 text-ink-3 transition-transform ${open === i ? "rotate-45" : ""}`} />
               </button>
               {open === i && (
-                <div className="px-6 pb-5 text-gray-600">{f.a}</div>
+                <div className="pb-6 text-ink-2 leading-relaxed max-w-2xl">{f.a}</div>
               )}
             </div>
           ))}
         </div>
-        <div className="text-center mt-14">
-          <p className="text-gray-600 mb-4">Still have questions?</p>
-          <CTAButton href="/contact" variant="primary">Ask Us Directly</CTAButton>
+        <div className="max-w-3xl mx-auto mt-14 flex items-center gap-6 flex-wrap">
+          <p className="text-ink-2">Something else on your mind?</p>
+          <CTAButton href="/contact" variant="secondary">Ask us directly</CTAButton>
         </div>
       </section>
     </>

@@ -1,192 +1,268 @@
+"use client";
 import Link from "next/link";
-import Image from "next/image";
-import { GraduationCap, PiggyBank, Briefcase, Star, CheckCircle2, Globe, Users, Award, ArrowRight } from "lucide-react";
+import { ArrowRight, Quote, GraduationCap, FileCheck2, Plane, Presentation } from "lucide-react";
 import EligibilityWidget from "@/components/EligibilityWidget";
 import CTAButton from "@/components/CTAButton";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import { services } from "@/data/services";
+import HeroRotator from "@/components/HeroRotator";
+
 import { destinations } from "@/data/destinations";
 import { testimonials } from "@/data/testimonials";
 
-const iconMap = {
-  graduation: GraduationCap,
-  money: PiggyBank,
-  plane: Briefcase,
+const destImages: Record<string, string> = {
+  "United Kingdom": "/images/flight1.jpg",
+  Canada: "/images/boarding.jpg",
+  "United States": "/images/airport.jpg",
+  Germany: "/images/jet.jpg",
+  Australia: "/images/runway.jpg",
+  "United Arab Emirates": "/images/flight2.jpg",
 };
+
+const steps = [
+  {
+    n: "1",
+    lines: ["STUDY", "ABROAD"],
+    icon: GraduationCap,
+    text: "We counsel students one-on-one on the best country, university and field of study for their profile and budget.",
+  },
+  {
+    n: "2",
+    lines: ["APPLICATION", "PROCESSES"],
+    icon: FileCheck2,
+    text: "Guidance every step of the way on your applications — documents, deadlines, and submission to your chosen universities.",
+  },
+  {
+    n: "3",
+    lines: ["VISA", "GUIDANCE"],
+    icon: Plane,
+    text: "Securing your student visa is the final gate. We handle documentation review and interview preparation until it's stamped.",
+  },
+  {
+    n: "4",
+    lines: ["EDUCATIONAL", "EXHIBITION"],
+    icon: Presentation,
+    text: "We connect you to fairs and exhibitions across our network of partner schools and universities worldwide.",
+  },
+];
 
 export default function Home() {
   return (
     <>
-      {/* Hero */}
-      <section className="relative bg-purple pt-36 pb-24 px-4 overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            background:
-              "radial-gradient(ellipse at 80% 20%, #6b2d8f 0%, transparent 60%), radial-gradient(ellipse at 10% 80%, #ffa500 0%, transparent 50%)",
-          }}
-        />
-        <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-gold/10 rounded-full blur-3xl" />
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-14 items-center">
-            <div>
-              <div className="inline-flex items-center px-4 py-2 bg-gold/20 text-gold rounded-full text-sm font-medium mb-6">
-                Formerly Future Builders Educational Institute
-              </div>
-              <h1 className="text-5xl md:text-6xl font-extrabold text-white leading-tight mb-5">
-                Your Gateway to <span className="text-gold">Global Opportunities</span>
-              </h1>
-              <p className="text-xl text-white/80 mb-8 max-w-xl leading-relaxed">
-                Expert guidance for study abroad, scholarships, and international job placements.
-                Check your eligibility in under a minute.
-              </p>
-              <div className="flex flex-wrap gap-6 text-white/90 text-sm font-medium mb-8">
-                <span className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-gold" /> 500+ Students Placed
-                </span>
-                <span className="flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-gold" /> 50+ Countries
-                </span>
-                <span className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-gold" /> 95% Success Rate
-                </span>
-              </div>
-              <CTAButton href="/services" variant="gradient">
-                Explore Services <ArrowRight className="inline w-5 h-5 ml-1" />
+      {/* HERO: rotating plane/aviation photo, dark overlay, centered copy — Prime style, plus the eligibility widget */}
+      <section className="relative bg-ink overflow-hidden">
+        <HeroRotator />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/70 to-ink/85" aria-hidden />
+
+        <div className="relative pt-44 pb-20 px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-kicker text-white/60 mb-5">
+              Formerly Future Builders Educational Institute
+            </p>
+            <h1 className="text-display font-statement text-white mb-6 !text-[clamp(2.25rem,4.5vw,3.75rem)]">
+              Study abroad, without the guesswork.
+            </h1>
+            <p className="hero-lede text-white/75 max-w-xl mx-auto mb-8">
+              Olubor places students and professionals into universities and
+              careers across the UK, USA, Canada, Germany, Australia and the
+              UAE — admissions, scholarships, visas, and jobs.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <CTAButton href="/services" variant="primary">
+                Our Services
+              </CTAButton>
+              <CTAButton href="/about" variant="secondary">
+                About Us
               </CTAButton>
             </div>
-            <div className="lg:pl-6">
-              <EligibilityWidget />
+            <div className="hero-stats flex flex-wrap justify-center items-baseline gap-x-8 gap-y-2.5 mt-10">
+              <span>
+                <span className="stat-strong">500+</span>{" "}
+                <span className="stat-label">students placed</span>
+              </span>
+              <span>
+                <span className="stat-strong">95%</span>{" "}
+                <span className="stat-label">visa success</span>
+              </span>
+              <span>
+                <span className="stat-strong">10 yrs</span>{" "}
+                <span className="stat-label">of experience</span>
+              </span>
             </div>
+          </div>
+        </div>
+
+        {/* Widget straddles the hero bottom edge */}
+        <div className="relative px-4 lg:px-8">
+          <div
+            className="max-w-4xl mx-auto translate-y-1/3"
+            id="eligibility-check"
+          >
+            <EligibilityWidget />
+          </div>
+        </div>
+        <div className="h-40 md:h-32" aria-hidden />
+      </section>
+
+      {/* Numbered service process — Prime's 4-card row */}
+      <section className="py-24 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-title text-ink mb-12 max-w-xl">
+            Brief on our study abroad consultation services
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {steps.map((s) => (
+              <div
+                key={s.n}
+                className="bg-white border border-gray-200 p-8 pb-10 shadow-sm"
+              >
+                <span className="flex h-14 w-14 items-center justify-center border-2 border-amber text-amber text-2xl font-bold mb-6">
+                  {s.n}
+                </span>
+                <h3 className="font-bold text-purple-mid tracking-wide uppercase text-[17px] leading-snug mb-4">
+                  {s.lines[0]}
+                  <br />
+                  {s.lines[1]}
+                </h3>
+                <p className="text-ink-2 text-[15px] leading-relaxed">
+                  {s.text}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Destinations strip */}
-      <section className="py-16 bg-white px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-purple mb-3">Destinations to Explore</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Study, work, and build a future in the world's most welcoming countries.
-            </p>
+      {/* Dependable claim: photo left / purple panel right with icon stats — Prime signature */}
+      <section className="grid lg:grid-cols-2">
+        <div
+          className="min-h-[420px] bg-cover bg-center"
+          style={{
+            backgroundImage: "url(/images/student.jpg)",
+          }}
+          role="img"
+          aria-label="A smiling student in graduation gown"
+        />
+        <div className="bg-purple text-white px-8 md:px-14 py-16 md:py-20 flex flex-col justify-center">
+          <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-10 max-w-lg">
+            We are dependable and reliable, owned and managed student
+            placement agents in Nigeria.
+          </h2>
+          <CTAButton href="/about" variant="secondary">
+            More About Olubor
+          </CTAButton>
+          <div className="grid grid-cols-3 gap-6 mt-14 max-w-lg">
+            {[
+              { icon: GraduationCap, l1: "Dedicated", l2: "consultants" },
+              { icon: FileCheck2, l1: "Goal", l2: "achievement" },
+              { icon: Plane, l1: "24/7", l2: "support" },
+            ].map((f) => (
+              <div key={f.l1} className="flex items-start gap-3">
+                <f.icon className="w-8 h-8 shrink-0 text-white/90" strokeWidth={1.5} />
+                <span className="text-[15px] font-semibold leading-tight">
+                  {f.l1}
+                  <br />
+                  {f.l2}
+                </span>
+              </div>
+            ))}
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        </div>
+      </section>
+
+      {/* Destinations: real photo cards — Prime style */}
+      <section className="py-24 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-title text-ink mb-4 max-w-xl">
+            Choose your best destination to study!
+          </h2>
+          <p className="text-ink-2 max-w-2xl mb-12">
+            We place students into universities across the UK and Europe, USA,
+            Canada, Australia, Germany, and the UAE.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {destinations.map((d) => (
               <Link
                 key={d.name}
                 href="/destinations"
-                className="card-hover bg-cream rounded-2xl p-5 text-center border border-orange-100"
+                className="group bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
               >
-                <span className="text-4xl">{d.flag}</span>
-                <h3 className="mt-3 font-bold text-purple text-sm">{d.name}</h3>
-                <p className="text-xs text-gray-500 mt-1">{d.highlights[0]}</p>
+                <div className="relative aspect-[16/9] overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={destImages[d.name] ?? "/images/student.jpg"}
+                    alt={d.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="flex items-center gap-3 px-5 py-4">
+                  <GraduationCap className="w-5 h-5 text-amber shrink-0" />
+                  <span className="font-bold text-ink tracking-wide uppercase text-[15px] group-hover:text-purple-mid transition">
+                    {d.name}
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Services */}
-      <section className="py-20 bg-gray-50 px-4" id="services">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-purple mb-4">What We Offer</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Everything you need to go global — education, funding, visas, careers.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {services.slice(0, 3).map((s) => {
-              const Icon = iconMap[s.icon];
-              return (
-                <div key={s.slug} className="card-hover bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-                  <div className="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mb-6">
-                    <Icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-purple mb-3">{s.title}</h3>
-                  <p className="text-gray-600 mb-5">{s.description}</p>
-                  <ul className="space-y-2 text-gray-600">
-                    {s.bullets.map((b) => (
-                      <li key={b} className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-orange" /> {b}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href={`/services/${s.slug}`} className="inline-flex items-center gap-1 text-purple font-semibold mt-6 hover:gap-2 transition-all">
-                    Learn more <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-          <div className="text-center mt-10">
-            <CTAButton href="/services" variant="secondary">View All Services</CTAButton>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="py-16 gradient-bg px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[
-            { n: "500+", l: "Students Placed", Icon: Users },
-            { n: "50+", l: "Partner Universities", Icon: Globe },
-            { n: "95%", l: "Success Rate", Icon: Award },
-            { n: "10+", l: "Years Experience", Icon: Star },
-          ].map(({ n, l, Icon }) => (
-            <div key={l} className="bg-white/20 rounded-2xl py-8 px-4 backdrop-blur-sm">
-              <Icon className="w-8 h-8 mx-auto text-purple mb-3" />
-              <div className="text-4xl font-extrabold text-white">{n}</div>
-              <div className="text-white/90 mt-1">{l}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 bg-white px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-purple mb-4">Loved By Students Everywhere</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Real people, real admissions, real careers abroad.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
+      {/* Success stories: Prime-style white testimonial cards */}
+      <section className="py-24 px-4 bg-plum-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-title text-ink mb-12 text-center">
+            Our successful stories
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t) => (
-              <div key={t.name} className="card-hover bg-cream p-8 rounded-3xl border border-orange-100">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-purple rounded-full flex items-center justify-center text-white font-bold">
-                    {t.initials}
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="font-bold text-purple">{t.name}</h4>
-                    <p className="text-sm text-gray-500">{t.detail}</p>
-                  </div>
-                </div>
-                <div className="flex gap-1 mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-gold fill-gold" />
-                  ))}
-                </div>
-                <p className="text-gray-600 italic">"{t.quote}"</p>
-              </div>
+              <figure
+                key={t.name}
+                className="bg-white border border-gray-200 shadow-sm p-8 text-center"
+              >
+                <span className="w-16 h-16 rounded-full bg-purple text-white flex items-center justify-center font-bold text-lg mx-auto mb-5 ring-4 ring-plum-100">
+                  {t.initials}
+                </span>
+                <blockquote className="text-ink-2 text-[15px] leading-relaxed mb-5">
+                  “{t.quote}”
+                </blockquote>
+                <figcaption>
+                  <span className="block font-bold text-ink">{t.name}</span>
+                  <span className="block text-sm text-ink-3 mt-1">
+                    {t.detail}
+                  </span>
+                </figcaption>
+              </figure>
             ))}
           </div>
+          <div className="text-center mt-10">
+            <Link
+              href="/success-stories"
+              className="inline-flex items-center gap-1.5 text-amber font-semibold hover:gap-2.5 transition-all"
+            >
+              All success stories <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* CTA banner */}
-      <section className="py-16 bg-purple text-white text-center px-4">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Your Journey Starts Here</h2>
-          <p className="text-lg opacity-80 mb-8">
-            Ready to start your journey? Contact us today for a free consultation.
-          </p>
-          <div className="flex justify-center gap-4 flex-wrap">
-            <CTAButton href="/contact" variant="gradient">Contact Us</CTAButton>
-            <CTAButton href="/eligibility" variant="secondary">Check Eligibility</CTAButton>
+      {/* Closing CTA */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div>
+            <h2 className="text-title text-ink mb-3">
+              Start with a free consultation.
+            </h2>
+            <p className="text-ink-2 max-w-md">
+              Thirty minutes with a counselor. You leave with a route, a budget,
+              and a timeline.
+            </p>
+          </div>
+          <div className="flex gap-4 shrink-0">
+            <CTAButton href="/contact" variant="primary">
+              Book free consultation
+            </CTAButton>
+            <CTAButton href="/#eligibility-check" variant="secondary">
+              Check eligibility
+            </CTAButton>
           </div>
         </div>
       </section>

@@ -8,17 +8,15 @@ type Props = {
 
 export default function PageHeader({ title, description, crumb }: Props) {
   return (
-    <section className="bg-purple text-white pt-32 pb-20 px-4">
-      <div className="max-w-7xl mx-auto text-center">
-        <p className="text-sm opacity-70 mb-3">
-          <Link href="/" className="hover:underline">Home</Link>
-          <span className="mx-2">•</span>
+    <section className="border-b border-gray-200 bg-white pt-36 pb-14 px-4">
+      <div className="max-w-6xl mx-auto">
+        <p className="text-kicker text-ink-3 mb-3">
+          <Link href="/" className="hover:text-amber transition">Home</Link>
+          <span className="mx-2 text-gray-300">/</span>
           {crumb}
         </p>
-        <h1 className="text-4xl md:text-5xl font-bold">{title}</h1>
-        {description && (
-          <p className="mt-4 text-lg opacity-80 max-w-3xl mx-auto">{description}</p>
-        )}
+        <h1 className="text-display text-ink max-w-3xl">{title}</h1>
+        {description && <p className="mt-4 text-lg text-ink-2 max-w-2xl leading-relaxed">{description}</p>}
       </div>
     </section>
   );

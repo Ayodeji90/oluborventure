@@ -3,15 +3,23 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Mail, Phone, MapPin } from "lucide-react";
+import Emblem from "./Emblem";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/services", label: "Services" },
+  { href: "/about", label: "About" },
+  { href: "/services", label: "Our Services" },
   { href: "/destinations", label: "Destinations" },
   { href: "/programs", label: "Programs" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/contact", label: "Contact Us" },
+];
+
+const socials = [
+  { label: "Facebook", path: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" },
+  { label: "Instagram", path: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a.75.75 0 110 1.5.75.75 0 010-1.5z" },
+  { label: "X (Twitter)", path: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" },
+  { label: "LinkedIn", path: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" },
 ];
 
 export default function Navbar() {
@@ -19,74 +27,102 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed w-full bg-white/95 backdrop-blur-sm shadow-md z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="w-12 h-12 rounded-full gradient-bg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/olubor-logo.svg" alt="Olubor Ventures logo" className="w-9 h-9" />
+    <nav className="fixed w-full z-50">
+      {/* Utility bar */}
+      <div className="bg-purple text-white/90">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-9 text-[12px]">
+            <div className="flex items-center gap-x-5 gap-y-1 flex-wrap">
+              <a href="mailto:info@oluborventures.com" className="flex items-center gap-1.5 hover:text-white transition">
+                <Mail className="w-3.5 h-3.5 text-amber shrink-0" /> info@oluborventures.com
+              </a>
+              <a href="tel:+2340000000000" className="hidden sm:flex items-center gap-1.5 hover:text-white transition">
+                <Phone className="w-3.5 h-3.5 text-amber shrink-0" /> +234 000 000 0000
+              </a>
+              <span className="hidden lg:flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-amber shrink-0" /> Lagos, Nigeria
+              </span>
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-purple leading-tight">OLUBOR VENTURES</h1>
-              <p className="text-xs text-purple opacity-80">Educational Consult</p>
+            <div className="hidden md:flex items-center gap-3">
+              <span className="text-white/50">Follow us</span>
+              {socials.map((s) => (
+                <a key={s.label} href="#" aria-label={s.label} className="text-white/70 hover:text-white transition">
+                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d={s.path} /></svg>
+                </a>
+              ))}
             </div>
-          </Link>
+          </div>
+        </div>
+      </div>
 
-          <div className="hidden md:flex space-x-7">
+      {/* Main nav */}
+      <div className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="flex items-center gap-3 py-2" aria-label="Olubor Ventures and Educational Consult — home">
+              <Emblem className="h-10 w-auto shrink-0 text-purple-mid" />
+              <span className="leading-tight whitespace-nowrap">
+                <span className="block font-statement text-[17px] text-purple-mid uppercase">Olubor Ventures</span>
+                <span className="block text-[8.5px] font-bold text-ink-3 tracking-[0.18em] uppercase mt-[2px]">And Educational Consult</span>
+              </span>
+            </Link>
+
+            <div className="hidden xl:flex items-center gap-0.5">
+              {links.map((l) => (
+                <Link
+                  key={l.label}
+                  href={l.href}
+                  className={`px-3 py-2 text-[13px] font-semibold tracking-wide uppercase transition ${
+                    pathname === l.href || (l.href !== "/" && pathname.startsWith(l.href))
+                      ? "text-purple-mid"
+                      : "text-ink-2 hover:text-purple-mid"
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+
+            <Link
+              href="/contact"
+              className="hidden xl:inline-flex items-center px-5 h-10 bg-purple-mid text-white text-[13px] font-semibold uppercase tracking-wide rounded hover:bg-purple transition"
+            >
+              Get Appointment
+            </Link>
+
+            <button
+              className="xl:hidden text-ink p-2.5 -mr-2.5"
+              onClick={() => setOpen(!open)}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+            >
+              {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <div className="xl:hidden bg-white border-t border-gray-200 px-4 pb-4 pt-2 max-h-[70vh] overflow-y-auto">
             {links.map((l) => (
               <Link
-                key={l.href}
+                key={l.label}
                 href={l.href}
-                className={`font-medium transition hover:text-orange-dark ${
-                  pathname === l.href ? "text-orange-dark" : "text-purple"
-                }`}
+                onClick={() => setOpen(false)}
+                className="block py-3 text-[15px] font-medium text-ink-2 border-b border-gray-100 last:border-0 uppercase text-[13px] tracking-wide"
               >
                 {l.label}
               </Link>
             ))}
-          </div>
-
-          <div className="hidden md:flex items-center gap-3">
             <Link
               href="/contact"
-              className="px-6 py-2 bg-purple text-white rounded-full font-medium hover:bg-purple-light transition"
+              onClick={() => setOpen(false)}
+              className="mt-3 flex items-center justify-center h-12 bg-purple-mid text-white font-semibold rounded uppercase text-sm tracking-wide"
             >
-              Get Started
+              Get Appointment
             </Link>
           </div>
-
-          <button
-            className="md:hidden text-purple"
-            onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
-          >
-            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
+        )}
       </div>
-
-      {open && (
-        <div className="md:hidden bg-white border-t px-4 py-4 space-y-3">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="block text-purple font-medium hover:text-orange-dark transition"
-            >
-              {l.label}
-            </Link>
-          ))}
-          <Link
-            href="/contact"
-            onClick={() => setOpen(false)}
-            className="block text-center w-full px-6 py-2 bg-purple text-white rounded-full font-medium"
-          >
-            Get Started
-          </Link>
-        </div>
-      )}
     </nav>
   );
 }
