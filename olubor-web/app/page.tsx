@@ -137,10 +137,10 @@ export default function Home() {
         <div
           className="min-h-[420px] bg-cover bg-center"
           style={{
-            backgroundImage: "url(/images/student.jpg)",
+            backgroundImage: "url(/images/graduate.jpg)",
           }}
           role="img"
-          aria-label="A smiling student in graduation gown"
+          aria-label="A proud smiling graduate in cap and gown holding a diploma on university campus"
         />
         <div className="bg-purple text-white px-8 md:px-14 py-16 md:py-20 flex flex-col justify-center">
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-10 max-w-lg">

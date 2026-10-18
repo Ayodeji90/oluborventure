@@ -60,7 +60,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-3 py-2" aria-label="Olubor Ventures and Educational Consult — home">
-              <Emblem className="h-10 w-auto shrink-0 text-purple-mid" />
+              <Emblem className="h-10 w-auto shrink-0" />
               <span className="leading-tight whitespace-nowrap">
                 <span className="block font-statement text-[17px] text-purple-mid uppercase">Olubor Ventures</span>
                 <span className="block text-[8.5px] font-bold text-ink-3 tracking-[0.18em] uppercase mt-[2px]">And Educational Consult</span>
