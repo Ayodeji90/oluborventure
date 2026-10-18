@@ -12,7 +12,7 @@ export default function WhatsAppButton({ message = "Hello Olubor Ventures! I wou
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 flex items-center justify-center gap-2.5 h-12 w-12 sm:w-auto sm:pl-4 sm:pr-5 rounded-full bg-ink text-white text-sm font-medium shadow-lg hover:bg-purple transition-colors"
+      className="liquid-glass liquid-glass-frost fixed bottom-6 right-6 z-50 flex items-center justify-center gap-2.5 h-12 w-12 sm:w-auto sm:pl-4 sm:pr-5 rounded-full bg-ink text-white text-sm font-medium transition"
       aria-label="Chat with us on WhatsApp"
     >
       <MessageCircle className="w-5 h-5 shrink-0" />

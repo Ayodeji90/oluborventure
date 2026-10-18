@@ -188,3 +188,42 @@ h1, h2, h3 {
   outline: 2px solid var(--purple-mid);
   outline-offset: 2px;
 }
+
+/* ------------------------------------------------------------------
+   Liquid Glass — a soft coloured mist that glows from *within* the
+   element. No hard edge ring and no specular "shine": the light is
+   diffused by two layered radial gradients, plus a soft outer halo.
+   Sets NO position/overflow and NO background colour of its own, so
+   the element keeps its own surface, size and shape. Recolour the glow
+   via the three `--glass-*` values. Pair with `.liquid-glass-frost`
+   for a translucent surface over imagery.
+   ------------------------------------------------------------------ */
+.liquid-glass {
+  --glass-mist: rgba(27, 63, 209, 0.65); /* vibrant royal blue (#1b3fd1) */
+  --glass-mist-2: rgba(96, 165, 250, 0.5); /* lighter blue highlight */
+  --glass-glow: rgba(27, 63, 209, 0.42); /* outer halo */
+
+  background-image:
+    radial-gradient(150% 190% at 20% 125%, var(--glass-mist) 0%, transparent 66%),
+    radial-gradient(130% 160% at 88% -45%, var(--glass-mist-2) 0%, transparent 62%);
+  background-repeat: no-repeat;
+  box-shadow:
+    0 10px 30px -12px rgba(0, 0, 0, 0.6), /* soft grounding */
+    0 0 26px 2px var(--glass-glow); /* soft diffused halo */
+  transition: box-shadow 0.45s ease, filter 0.45s ease;
+}
+
+.liquid-glass:hover {
+  filter: brightness(1.08) saturate(1.05);
+  box-shadow:
+    0 12px 34px -12px rgba(0, 0, 0, 0.65),
+    0 0 34px 5px var(--glass-glow);
+}
+
+/* Opt-in translucent surface (smoked glass + blur) for elements that
+   sit over imagery. Pair with `.liquid-glass` (e.g. the WhatsApp pill). */
+.liquid-glass-frost {
+  background-color: rgba(13, 20, 32, 0.7);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
+}

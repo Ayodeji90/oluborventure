@@ -85,7 +85,7 @@ export default function Navbar() {
 
             <Link
               href="/contact"
-              className="hidden xl:inline-flex items-center px-5 h-10 bg-purple-mid text-white text-[13px] font-semibold uppercase tracking-wide rounded hover:bg-purple transition"
+              className="liquid-glass hidden xl:inline-flex items-center px-5 h-10 bg-purple-mid text-white text-[13px] font-semibold uppercase tracking-wide rounded-full hover:bg-purple transition"
             >
               Get Appointment
             </Link>
@@ -116,7 +116,7 @@ export default function Navbar() {
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="mt-3 flex items-center justify-center h-12 bg-purple-mid text-white font-semibold rounded uppercase text-sm tracking-wide"
+              className="liquid-glass mt-3 flex items-center justify-center h-12 bg-purple-mid text-white font-semibold rounded-full uppercase text-sm tracking-wide"
             >
               Get Appointment
             </Link>
