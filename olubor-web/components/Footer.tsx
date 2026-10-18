@@ -48,9 +48,9 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-5">
-              <Emblem className="h-12 w-auto shrink-0 text-white" />
+              <Emblem variant="white" className="h-10 w-auto shrink-0" />
               <span className="leading-tight">
-                <span className="block font-statement text-[20px] uppercase">Olubor Ventures</span>
+                <span className="block font-statement text-[20px] uppercase text-white">Olubor Ventures</span>
                 <span className="block text-[9px] font-bold text-white/60 tracking-[0.18em] uppercase mt-1">And Educational Consult</span>
               </span>
             </div>

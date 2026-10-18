@@ -1,21 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --purple: #2e1247; /* deep aubergine — primary */
-  --purple-mid: #4a1a6b; /* brand purple, secondary uses */
-  --purple-light: #6b2d8f;
-  --plum-50: #f7f3fb;
-  --plum-100: #ece3f4;
-  --amber: #b45309; /* single accent: amber-700, AA on white */
-  --amber-600: #d97706; /* large text / hover only */
-  --sand: #f6f2ec; /* warm neutral surface */
-  --sand-dark: #e8e0d4;
-  --ink: #171017;
-  --ink-2: #4a4252;
-  --ink-3: #726878;
+  /* Brand Color Palette */
+  /* Royal Blue - HEX: #0122A3 | RGB: 1, 34, 163 */
+  --royal-blue: #0122a3;
+  --royal-blue-rgb: 1, 34, 163;
+  --purple: #011874; /* deep royal navy — utility bar, footer, dark hero elements */
+  --purple-mid: #0122a3; /* primary royal blue */
+  --purple-light: #1b3fd1; /* vibrant royal blue for hover/highlights */
+  --plum-50: #f0f4ff; /* soft royal blue tint for alternating sections */
+  --plum-100: #dce6fe; /* subtle royal blue border/card tint */
+
+  /* Golden Yellow - HEX: #FCC101 | RGB: 252, 193, 1 */
+  --golden-yellow: #fcc101;
+  --golden-yellow-rgb: 252, 193, 1;
+  --amber: #fcc101; /* primary golden yellow accent */
+  --amber-600: #d9a300; /* deeper golden yellow for high contrast */
+
+  --sand: #faf8f5; /* warm neutral surface */
+  --sand-dark: #eee7d9;
+  --ink: #0c1222; /* deep navy/ink text */
+  --ink-2: #334155;
+  --ink-3: #64748b;
 }
 
 @theme inline {
+  --color-royal-blue: var(--royal-blue);
+  --color-golden-yellow: var(--golden-yellow);
   --color-purple: var(--purple);
   --color-purple-mid: var(--purple-mid);
   --color-purple-light: var(--purple-light);
@@ -75,7 +86,7 @@ h1, h2, h3 {
 
 /* The ONE gradient moment — reserved for the hero logo chip only */
 .brand-chip {
-  background: linear-gradient(135deg, #ffd700 0%, #ffa500 60%, #ff8c00 100%);
+  background: linear-gradient(135deg, #fcc101 0%, #ffcf33 50%, #e0ab00 100%);
 }
 
 /* Serif statement style — hero headline only */
@@ -153,7 +164,7 @@ h1, h2, h3 {
 
 .card-hover:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(46, 18, 71, 0.1);
+  box-shadow: 0 10px 30px rgba(1, 34, 163, 0.12);
 }
 
 ::selection {
@@ -169,11 +180,11 @@ h1, h2, h3 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c4b5cd;
+  background: #b5c7f2;
   border-radius: 5px;
 }
 
 :focus-visible {
-  outline: 2px solid var(--purple);
+  outline: 2px solid var(--purple-mid);
   outline-offset: 2px;
 }

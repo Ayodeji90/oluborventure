@@ -1,13 +1,14 @@
 /* Custom CSS Variables */
 :root {
-    --primary-purple: #4A1A6B;
-    --primary-purple-light: #6B2D8F;
-    --gold: #FFD700;
-    --orange: #FFA500;
-    --orange-dark: #FF8C00;
-    --gradient-start: #FFD700;
-    --gradient-mid: #FFA500;
-    --gradient-end: #FF8C00;
+    --primary-purple: #0122A3;
+    --primary-purple-light: #163ecc;
+    --primary-purple-dark: #011874;
+    --gold: #FCC101;
+    --orange: #f5b700;
+    --orange-dark: #e0ab00;
+    --gradient-start: #FCC101;
+    --gradient-mid: #f5b700;
+    --gradient-end: #e0ab00;
 }
 
 /* Base Styles */
