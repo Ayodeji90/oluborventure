@@ -2,3 +2,6 @@ node_modules/
 .next/
 .env*
 .gstack/
+
+# Build output from the root package.json (the static marketing page)
+dist/

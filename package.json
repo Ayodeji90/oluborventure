@@ -1,0 +1,9 @@
+{
+  "name": "olubor-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static marketing page served from the repository root. The Next.js application lives in olubor-web/.",
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp index.html logo.png logo-white.png dist/"
+  }
+}
