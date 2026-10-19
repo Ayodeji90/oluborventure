@@ -43,13 +43,21 @@ export default function Navbar() {
                 <MapPin className="w-3.5 h-3.5 text-amber shrink-0" /> Lagos, Nigeria
               </span>
             </div>
-            <div className="hidden md:flex items-center gap-3">
-              <span className="text-white/50">Follow us</span>
-              {socials.map((s) => (
-                <a key={s.label} href="#" aria-label={s.label} className="text-white/70 hover:text-white transition">
-                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d={s.path} /></svg>
-                </a>
-              ))}
+            <div className="flex items-center gap-3">
+              <Link
+                href="/portal"
+                className="font-semibold text-white/90 hover:text-amber transition whitespace-nowrap"
+              >
+                Client Portal
+              </Link>
+              <span className="hidden md:inline text-white/50">Follow us</span>
+              <div className="hidden md:flex items-center gap-3">
+                {socials.map((s) => (
+                  <a key={s.label} href="#" aria-label={s.label} className="text-white/70 hover:text-white transition">
+                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d={s.path} /></svg>
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -84,10 +92,10 @@ export default function Navbar() {
             </div>
 
             <Link
-              href="/contact"
+              href="/apply"
               className="liquid-glass hidden xl:inline-flex items-center px-5 h-10 bg-purple-mid text-white text-[13px] font-semibold uppercase tracking-wide rounded-full hover:bg-purple transition"
             >
-              Get Appointment
+              Get Started
             </Link>
 
             <button
@@ -114,11 +122,11 @@ export default function Navbar() {
               </Link>
             ))}
             <Link
-              href="/contact"
+              href="/apply"
               onClick={() => setOpen(false)}
               className="liquid-glass mt-3 flex items-center justify-center h-12 bg-purple-mid text-white font-semibold rounded-full uppercase text-sm tracking-wide"
             >
-              Get Appointment
+              Get Started
             </Link>
           </div>
         )}

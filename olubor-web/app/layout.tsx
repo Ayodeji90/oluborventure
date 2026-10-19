@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Poppins, Playfair_Display, Figtree } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -37,7 +38,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${poppins.variable} ${playfair.variable} ${figtree.variable} antialiased`}>
       <body className="min-h-screen flex flex-col">
-        <Navbar />
+        {/*
+          Navbar reads usePathname(), which suspends while prerendering any route
+          with a dynamic param that isn't known at build time (e.g. a portal
+          application id). The boundary lets those routes prerender; the fallback
+          reserves the same height so nothing shifts.
+        */}
+        <Suspense fallback={<div className="h-[100px]" aria-hidden />}>
+          <Navbar />
+        </Suspense>
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
