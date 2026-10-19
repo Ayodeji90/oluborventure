@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, Clock, LoaderCircle } from "lucide-react";
-import { SetupNotice } from "@/components/portal/RequireAuth";
 import { authedFetch, readError } from "@/lib/appwrite/api";
 import { getCurrentUser } from "@/lib/appwrite/client";
 import { isAppwriteConfigured } from "@/lib/appwrite/config";
@@ -97,8 +96,6 @@ export default function ProgramChooser() {
     }
   };
 
-  if (!isAppwriteConfigured) return <SetupNotice />;
-
   return (
     <div>
       <p className="text-kicker text-ink-3 mb-4">Step 1 — choose programme</p>
@@ -178,11 +175,16 @@ export default function ProgramChooser() {
         </p>
       )}
 
+      {/*
+        The programme list above is informational and always visible. Only the
+        action depends on the backend being wired up, and applicants must never
+        be shown setup instructions.
+      */}
       <div className="mt-8 flex flex-wrap items-center gap-4">
         <button
           type="button"
           onClick={start}
-          disabled={!active || busy}
+          disabled={!active || busy || !isAppwriteConfigured}
           className="liquid-glass inline-flex items-center gap-2 h-12 px-7 rounded-full bg-purple-mid text-white text-[13px] font-semibold uppercase tracking-wide hover:bg-purple transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {busy ? <LoaderCircle className="w-4 h-4 animate-spin" /> : null}
@@ -191,9 +193,11 @@ export default function ProgramChooser() {
         </button>
 
         <p className="text-[14px] text-ink-3">
-          {active
-            ? "You will create an account so your progress is saved."
-            : "Choose a programme to continue."}
+          {!isAppwriteConfigured
+            ? "Online applications open shortly. In the meantime, here is what each programme asks for."
+            : active
+              ? "You will create an account so your progress is saved."
+              : "Choose a programme to continue."}
         </p>
       </div>
     </div>
