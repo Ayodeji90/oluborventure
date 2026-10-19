@@ -44,12 +44,6 @@ export default function Navbar() {
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <Link
-                href="/portal"
-                className="font-semibold text-white/90 hover:text-amber transition whitespace-nowrap"
-              >
-                Client Portal
-              </Link>
               <span className="hidden md:inline text-white/50">Follow us</span>
               <div className="hidden md:flex items-center gap-3">
                 {socials.map((s) => (
