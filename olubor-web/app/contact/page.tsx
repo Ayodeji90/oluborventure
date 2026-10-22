@@ -31,8 +31,8 @@ export default function ContactPage() {
             <div>
               <h3 className="text-kicker text-ink-3 mb-3">Direct</h3>
               <ul className="space-y-4">
-                <li className="flex items-center gap-3"><Phone className="w-4 h-4 text-purple shrink-0" /><span className="text-ink">+234 XXX XXX XXXX</span></li>
-                <li className="flex items-center gap-3"><Mail className="w-4 h-4 text-purple shrink-0" /><span className="text-ink">info@oluborventures.com</span></li>
+                <li className="flex items-center gap-3"><Phone className="w-4 h-4 text-purple shrink-0" /><span className="text-ink">+44 7404 662298</span></li>
+                <li className="flex items-center gap-3"><Mail className="w-4 h-4 text-purple shrink-0" /><span className="text-ink">info@oluborconsults.com</span></li>
                 <li className="flex items-center gap-3"><MapPin className="w-4 h-4 text-purple shrink-0" /><span className="text-ink">Lagos, Nigeria</span></li>
               </ul>
             </div>

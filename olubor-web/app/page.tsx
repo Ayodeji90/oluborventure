@@ -10,12 +10,12 @@ import { destinations } from "@/data/destinations";
 import { testimonials } from "@/data/testimonials";
 
 const destImages: Record<string, string> = {
-  "United Kingdom": "/images/flight1.jpg",
-  Canada: "/images/boarding.jpg",
-  "United States": "/images/airport.jpg",
-  Germany: "/images/jet.jpg",
-  Australia: "/images/runway.jpg",
-  "United Arab Emirates": "/images/flight2.jpg",
+  "United Kingdom": "/images/flight1.webp",
+  Canada: "/images/boarding.webp",
+  "United States": "/images/airport.webp",
+  Germany: "/images/jet.webp",
+  Australia: "/images/runway.webp",
+  "United Arab Emirates": "/images/flight2.webp",
 };
 
 const steps = [
@@ -137,7 +137,7 @@ export default function Home() {
         <div
           className="min-h-[420px] bg-cover bg-center"
           style={{
-            backgroundImage: "url(/images/graduate.jpg)",
+            backgroundImage: "url(/images/graduate.webp)",
           }}
           role="img"
           aria-label="A proud smiling graduate in cap and gown holding a diploma on university campus"
@@ -189,7 +189,7 @@ export default function Home() {
                 <div className="relative aspect-[16/9] overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={destImages[d.name] ?? "/images/student.jpg"}
+                    src={destImages[d.name] ?? "/images/student.webp"}
                     alt={d.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />

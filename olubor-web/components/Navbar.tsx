@@ -33,11 +33,11 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-9 text-[12px]">
             <div className="flex items-center gap-x-5 gap-y-1 flex-wrap">
-              <a href="mailto:info@oluborventures.com" className="flex items-center gap-1.5 hover:text-white transition">
-                <Mail className="w-3.5 h-3.5 text-amber shrink-0" /> info@oluborventures.com
+              <a href="mailto:info@oluborconsults.com" className="flex items-center gap-1.5 hover:text-white transition">
+                <Mail className="w-3.5 h-3.5 text-amber shrink-0" /> info@oluborconsults.com
               </a>
-              <a href="tel:+2340000000000" className="hidden sm:flex items-center gap-1.5 hover:text-white transition">
-                <Phone className="w-3.5 h-3.5 text-amber shrink-0" /> +234 000 000 0000
+              <a href="tel:+447404662298" className="hidden sm:flex items-center gap-1.5 hover:text-white transition">
+                <Phone className="w-3.5 h-3.5 text-amber shrink-0" /> +44 7404 662298
               </a>
               <span className="hidden lg:flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-amber shrink-0" /> Lagos, Nigeria

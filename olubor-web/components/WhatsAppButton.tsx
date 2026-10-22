@@ -5,7 +5,7 @@ type Props = {
 };
 
 export default function WhatsAppButton({ message = "Hello Olubor Ventures! I would like to make an inquiry." }: Props) {
-  const href = `https://wa.me/2340000000000?text=${encodeURIComponent(message)}`;
+  const href = `https://wa.me/447404662298?text=${encodeURIComponent(message)}`;
 
   return (
     <a

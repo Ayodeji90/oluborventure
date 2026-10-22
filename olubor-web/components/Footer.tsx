@@ -38,7 +38,7 @@ export default function Footer() {
     <footer className="relative bg-ink text-white">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{ backgroundImage: "url(/images/student.jpg)" }}
+        style={{ backgroundImage: "url(/images/student.webp)" }}
         aria-hidden
       />
       <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/60 to-ink/90" aria-hidden />
@@ -59,8 +59,8 @@ export default function Footer() {
               careers since 2016. Formerly Future Builders Educational Institute.
             </p>
             <ul className="space-y-2.5 text-[15px]">
-              <li><span className="font-bold">Tel:</span> <a href="tel:+2340000000000" className="text-white/80 hover:text-white transition">+234 000 000 0000</a></li>
-              <li><span className="font-bold">Email:</span> <a href="mailto:info@oluborventures.com" className="text-white/80 hover:text-white transition">info@oluborventures.com</a></li>
+              <li><span className="font-bold">Tel:</span> <a href="tel:+447404662298" className="text-white/80 hover:text-white transition">+44 7404 662298</a></li>
+              <li><span className="font-bold">Email:</span> <a href="mailto:info@oluborconsults.com" className="text-white/80 hover:text-white transition">info@oluborconsults.com</a></li>
               <li><span className="font-bold">Location:</span> <span className="text-white/80">Lagos, Nigeria</span></li>
             </ul>
             <div className="flex gap-3 mt-6">

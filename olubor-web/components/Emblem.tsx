@@ -7,10 +7,10 @@ type EmblemProps = {
 
 /**
  * Olubor emblem — sun rays, globe and open book.
- * Sourced from /logo.png or /logo-white.png.
+ * Sourced from /logo.webp or /logo-white.webp.
  */
 export default function Emblem({ className = "", variant = "default" }: EmblemProps) {
-  const src = variant === "white" ? "/logo-white.png" : "/logo.png";
+  const src = variant === "white" ? "/logo-white.webp" : "/logo.webp";
   return (
     <Image
       src={src}

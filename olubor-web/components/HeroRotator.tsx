@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 
 const slides = [
-  { src: "/images/flight1.jpg", alt: "Aeroplane approaching to land" },
-  { src: "/images/airport.jpg", alt: "Airport terminal" },
-  { src: "/images/boarding.jpg", alt: "Passengers boarding a plane" },
-  { src: "/images/runway.jpg", alt: "Runway and approach path" },
-  { src: "/images/flight2.jpg", alt: "Aeroplane in flight" },
-  { src: "/images/jet.jpg", alt: "Jet aircraft" },
+  { src: "/images/flight1.webp", alt: "Aeroplane approaching to land" },
+  { src: "/images/airport.webp", alt: "Airport terminal" },
+  { src: "/images/boarding.webp", alt: "Passengers boarding a plane" },
+  { src: "/images/runway.webp", alt: "Runway and approach path" },
+  { src: "/images/flight2.webp", alt: "Aeroplane in flight" },
+  { src: "/images/jet.webp", alt: "Jet aircraft" },
 ];
 
 export default function HeroRotator() {
