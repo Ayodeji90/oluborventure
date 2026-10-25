@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerClient } from "@/lib/supabase/server";
+
+export const instant = false;
 import { PROGRAM_LABELS, STATUS_LABELS, ALL_STATUSES, type Application, type ApplicationDocument, type ApplicationReference, type ApplicationStatus, type ProgramType } from "@/lib/supabase/types";
 import StatusUpdater from "@/components/admin/StatusUpdater";
 import { ArrowLeft, Download } from "lucide-react";

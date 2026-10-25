@@ -1,6 +1,8 @@
 import { getServerClient } from "@/lib/supabase/server";
 import ApplicationsTable from "@/components/admin/ApplicationsTable";
 
+export const instant = false;
+
 export default async function AdminPage() {
   const supabase = getServerClient();
   const { data: applications, error } = await supabase
