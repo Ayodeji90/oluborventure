@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { ArrowRight, Quote, GraduationCap, FileCheck2, Plane, Presentation } from "lucide-react";
-import EligibilityWidget from "@/components/EligibilityWidget";
 import CTAButton from "@/components/CTAButton";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import HeroRotator from "@/components/HeroRotator";
@@ -48,7 +47,7 @@ const steps = [
 export default function Home() {
   return (
     <>
-      {/* HERO: rotating plane/aviation photo, dark overlay, centered copy — Prime style, plus the eligibility widget */}
+      {/* HERO: rotating plane/aviation photo, dark overlay, centered copy — Prime style */}
       <section className="relative bg-ink overflow-hidden">
         <HeroRotator />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/70 to-ink/85" aria-hidden />
@@ -90,17 +89,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
-        {/* Widget straddles the hero bottom edge */}
-        <div className="relative px-4 lg:px-8">
-          <div
-            className="max-w-4xl mx-auto translate-y-1/3"
-            id="eligibility-check"
-          >
-            <EligibilityWidget />
-          </div>
-        </div>
-        <div className="h-40 md:h-32" aria-hidden />
       </section>
 
       {/* Numbered service process — Prime's 4-card row */}
@@ -259,9 +247,6 @@ export default function Home() {
           <div className="flex gap-4 shrink-0">
             <CTAButton href="/contact" variant="primary">
               Book free consultation
-            </CTAButton>
-            <CTAButton href="/#eligibility-check" variant="secondary">
-              Check eligibility
             </CTAButton>
           </div>
         </div>

@@ -2,34 +2,32 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowRight, LoaderCircle } from "lucide-react";
 import { useAuth } from "@/components/portal/AuthProvider";
-import { SetupNotice } from "@/components/portal/RequireAuth";
-import { authErrorMessage, authedFetch, readError } from "@/lib/appwrite/api";
-import { isAppwriteConfigured } from "@/lib/appwrite/config";
-import {
-  PROGRAM_LABELS,
-  PROGRAM_PREFIXES,
-  type Application,
-  type ProgramType,
-} from "@/lib/appwrite/types";
+import { createClient } from "@/lib/supabase/client";
+import { PROGRAM_LABELS, type ProgramType } from "@/lib/supabase/types";
 
 const inputCls =
   "w-full px-4 py-3 min-h-[48px] rounded-lg border border-gray-300 bg-white text-[15px] text-ink focus:border-purple focus:ring-2 focus:ring-purple/20 outline-none transition";
 const labelCls = "block text-sm font-semibold text-ink mb-2";
 
+const PROGRAM_KEYS = Object.keys(PROGRAM_LABELS) as ProgramType[];
+
 export default function SignUpPage() {
-  const { user, loading, configured, signIn } = useAuth();
+  const { user, loading, signIn } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Set by /apply when someone picks a programme before creating an account.
-  const requested = searchParams.get("program");
-  const requestedProgram: ProgramType | null =
-    requested && Object.prototype.hasOwnProperty.call(PROGRAM_PREFIXES, requested)
-      ? (requested as ProgramType)
-      : null;
+  const [requestedProgram, setRequestedProgram] = useState<ProgramType | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const program = params.get("program");
+    if (program && PROGRAM_KEYS.includes(program as ProgramType)) {
+      setRequestedProgram(program as ProgramType);
+    }
+  }, []);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -39,8 +37,8 @@ export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (configured && !loading && user) router.replace("/portal");
-  }, [configured, loading, user, router]);
+    if (!loading && user) router.replace("/portal");
+  }, [loading, user, router]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -59,47 +57,27 @@ export default function SignUpPage() {
     const normalisedEmail = email.trim().toLowerCase();
 
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), email: normalisedEmail, password }),
+      const supabase = createClient();
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: normalisedEmail,
+        password,
+        options: {
+          data: { full_name: name.trim() },
+        },
       });
 
-      if (!response.ok) {
-        setError(await readError(response, "We could not create your account."));
+      if (signUpError) {
+        setError(signUpError.message);
         return;
       }
 
-      // Account created — sign in so they land ready to work.
+      // Sign in immediately after registration
       try {
         await signIn(normalisedEmail, password);
       } catch (err) {
-        setError(
-          authErrorMessage(
-            err,
-            "Your account was created but signing you in failed. Please sign in manually.",
-          ),
-        );
+        const msg = err instanceof Error ? err.message : "Your account was created but signing you in failed. Please sign in manually.";
+        setError(msg);
         return;
-      }
-
-      // Arrived from /apply with a programme? Open that application straight
-      // away rather than dropping them on an empty dashboard.
-      if (requestedProgram) {
-        try {
-          const created = await authedFetch("/api/applications", {
-            method: "POST",
-            body: JSON.stringify({ program_type: requestedProgram }),
-          });
-
-          if (created.ok) {
-            const { application } = (await created.json()) as { application: Application };
-            router.replace(`/portal/applications/${application.$id}`);
-            return;
-          }
-        } catch {
-          // Fall through to the dashboard; they can start again from there.
-        }
       }
 
       router.replace("/portal");
@@ -109,8 +87,6 @@ export default function SignUpPage() {
       setBusy(false);
     }
   };
-
-  if (!isAppwriteConfigured) return <SetupNotice />;
 
   return (
     <div className="grid lg:grid-cols-[1fr_0.9fr] gap-12 items-start">

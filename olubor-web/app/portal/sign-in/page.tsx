@@ -5,16 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, LoaderCircle } from "lucide-react";
 import { useAuth } from "@/components/portal/AuthProvider";
-import { SetupNotice } from "@/components/portal/RequireAuth";
-import { authErrorMessage } from "@/lib/appwrite/api";
-import { isAppwriteConfigured } from "@/lib/appwrite/config";
 
 const inputCls =
   "w-full px-4 py-3 min-h-[48px] rounded-lg border border-gray-300 bg-white text-[15px] text-ink focus:border-purple focus:ring-2 focus:ring-purple/20 outline-none transition";
 const labelCls = "block text-sm font-semibold text-ink mb-2";
 
 export default function SignInPage() {
-  const { user, loading, configured, signIn } = useAuth();
+  const { user, loading, signIn } = useAuth();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -24,8 +21,8 @@ export default function SignInPage() {
 
   // Already signed in? Go straight to the dashboard.
   useEffect(() => {
-    if (configured && !loading && user) router.replace("/portal");
-  }, [configured, loading, user, router]);
+    if (!loading && user) router.replace("/portal");
+  }, [loading, user, router]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,13 +32,12 @@ export default function SignInPage() {
       await signIn(email.trim().toLowerCase(), password);
       router.replace("/portal");
     } catch (err) {
-      setError(authErrorMessage(err, "We could not sign you in just now. Please try again."));
+      const msg = err instanceof Error ? err.message : "We could not sign you in just now. Please try again.";
+      setError(msg);
     } finally {
       setBusy(false);
     }
   };
-
-  if (!isAppwriteConfigured) return <SetupNotice />;
 
   return (
     <div className="grid lg:grid-cols-[1fr_0.9fr] gap-12 items-start">

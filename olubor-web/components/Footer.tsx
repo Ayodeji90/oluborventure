@@ -17,7 +17,9 @@ const serviceLinks = [
   { href: "/services/scholarships", label: "Scholarships" },
   { href: "/services/visa-assistance", label: "Visa Guidance" },
   { href: "/services/international-jobs", label: "International Jobs" },
-  { href: "/programs", label: "Programs" },
+  { href: "/services/canada-processing", label: "Canada 🇨🇦 Processing" },
+  { href: "/services/french-tutoring", label: "French Tutoring" },
+  { href: "/services/flight-booking", label: "Flight Booking" },
   { href: "/destinations", label: "Destinations" },
 ];
 

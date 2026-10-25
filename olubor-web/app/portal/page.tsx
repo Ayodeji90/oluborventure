@@ -2,14 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Query } from "appwrite";
 import { ArrowRight, FolderOpen, LoaderCircle, Plus, RefreshCw } from "lucide-react";
 import { useAuth } from "@/components/portal/AuthProvider";
 import RequireAuth from "@/components/portal/RequireAuth";
 import StatusBadge from "@/components/portal/StatusBadge";
-import { getTables } from "@/lib/appwrite/client";
-import { APPWRITE_DATABASE_ID, TABLES } from "@/lib/appwrite/config";
-import { PROGRAM_LABELS, type Application } from "@/lib/appwrite/types";
+import { createClient } from "@/lib/supabase/client";
+import { PROGRAM_LABELS, type Application } from "@/lib/supabase/types";
 
 export default function PortalPage() {
   return (
@@ -29,17 +27,16 @@ function formatDate(iso?: string | null): string {
 const LOAD_ERROR =
   "We could not load your applications. If the database has just been created, give it a moment and refresh.";
 
-/**
- * Module scope, deliberately: the mount effect below must not call setState
- * synchronously, so it calls this and updates state from the promise callbacks.
- */
-async function fetchApplications(userId: string): Promise<Application[]> {
-  const result = await getTables().listRows<Application>({
-    databaseId: APPWRITE_DATABASE_ID,
-    tableId: TABLES.applications,
-    queries: [Query.equal("user_id", userId), Query.orderDesc("$createdAt"), Query.limit(50)],
-  });
-  return result.rows;
+async function fetchApplications(email: string): Promise<Application[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("applications")
+    .select("*")
+    .eq("email", email)
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  return data ?? [];
 }
 
 function Dashboard() {
@@ -49,28 +46,27 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const userId = user?.$id;
+  const email = user?.email;
 
-  // Explicit reload, used by the Refresh button (an event handler, not an effect).
   const load = useCallback(async () => {
-    if (!userId) return;
+    if (!email) return;
     setLoading(true);
     setError(null);
     try {
-      setApplications(await fetchApplications(userId));
+      setApplications(await fetchApplications(email));
     } catch (err) {
       console.error("[portal] could not load applications", err);
       setError(LOAD_ERROR);
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [email]);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!email) return;
 
     let cancelled = false;
-    void fetchApplications(userId).then(
+    void fetchApplications(email).then(
       (rows) => {
         if (cancelled) return;
         setApplications(rows);
@@ -88,9 +84,7 @@ function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
-
-  const drafts = applications.filter((a) => a.status === "draft");
+  }, [email]);
 
   return (
     <div className="space-y-8">
@@ -100,9 +94,7 @@ function Dashboard() {
           <div className="max-w-xl">
             <h2 className="text-lg font-bold text-ink mb-1">Start a new application</h2>
             <p className="text-ink-2 text-[15px] leading-relaxed">
-              {drafts.length > 0
-                ? `You have ${drafts.length} draft application${drafts.length === 1 ? "" : "s"} in progress below.`
-                : "Choose the programme you are applying for — each one asks for different documents. You can save and come back any time."}
+              Choose the programme you are applying for — each one asks for different documents.
             </p>
           </div>
 
@@ -159,9 +151,9 @@ function Dashboard() {
         {!loading && !error && applications.length > 0 && (
           <ul className="space-y-3">
             {applications.map((application) => (
-              <li key={application.$id}>
+              <li key={application.id}>
                 <Link
-                  href={`/portal/applications/${application.$id}`}
+                  href={`/portal/applications/${application.id}`}
                   className="block border border-gray-200 rounded-xl bg-white p-5 hover:border-purple transition group"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -172,25 +164,15 @@ function Dashboard() {
                       <StatusBadge status={application.status} />
                     </div>
                     <span className="text-[13px] text-ink-3">
-                      Updated {formatDate(application.$updatedAt)}
+                      Updated {formatDate(application.updated_at)}
                     </span>
                   </div>
 
                   <p className="font-semibold text-ink">
                     {PROGRAM_LABELS[application.program_type] ?? "Application"}
-                    {application.target_university ? ` · ${application.target_university}` : ""}
                   </p>
 
-                  <div className="flex items-center gap-4 mt-4">
-                    <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
-                      <div
-                        className="h-full bg-purple-mid rounded-full transition-all"
-                        style={{ width: `${Math.min(100, Math.max(0, application.completion_pct ?? 0))}%` }}
-                      />
-                    </div>
-                    <span className="text-[12px] font-semibold text-ink-3 tabular-nums">
-                      {application.completion_pct ?? 0}%
-                    </span>
+                  <div className="flex items-center justify-end mt-4">
                     <ArrowRight className="w-4 h-4 text-ink-3 group-hover:text-purple-mid transition" />
                   </div>
                 </Link>

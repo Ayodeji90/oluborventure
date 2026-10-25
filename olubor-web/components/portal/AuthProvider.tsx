@@ -9,15 +9,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Models } from "appwrite";
-import { getAccount } from "@/lib/appwrite/client";
-import { isAppwriteConfigured } from "@/lib/appwrite/config";
-
-type AppwriteUser = Models.User<Models.Preferences>;
+import type { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
 
 type AuthContextValue = {
-  user: AppwriteUser | null;
+  user: User | null;
   loading: boolean;
+  /** Always true — Supabase is the configured backend. */
   configured: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -26,64 +24,52 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-/**
- * Reads the current Appwrite session. Resolves to null when the visitor is not
- * signed in (the SDK throws a 401) or when there is no backend configured.
- * Kept outside the component so the mount effect below can call it without the
- * hook linter treating its callers as "setState during render".
- */
-async function loadCurrentUser(): Promise<AppwriteUser | null> {
-  if (!isAppwriteConfigured) return null;
-  try {
-    return await getAccount().get();
-  } catch {
-    return null;
-  }
-}
-
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AppwriteUser | null>(null);
-  // Start in the loading state only when there is a backend to talk to.
-  const [loading, setLoading] = useState(isAppwriteConfigured);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Nothing to talk to; `loading` already starts false in that case.
-    if (!isAppwriteConfigured) return;
+    const supabase = createClient();
 
-    let cancelled = false;
-    void loadCurrentUser().then((current) => {
-      if (cancelled) return;
-      setUser(current);
+    // Load the initial session once
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+      setLoading(false);
+    });
+
+    // Subscribe to auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
     return () => {
-      cancelled = true;
+      subscription.unsubscribe();
     };
   }, []);
 
   const refresh = useCallback(async () => {
-    const current = await loadCurrentUser();
-    setUser(current);
-    setLoading(false);
+    const supabase = createClient();
+    const { data } = await supabase.auth.getUser();
+    setUser(data.user);
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    await getAccount().createEmailPasswordSession({ email, password });
-    setUser(await getAccount().get());
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
   }, []);
 
   const signOut = useCallback(async () => {
-    try {
-      await getAccount().deleteSession({ sessionId: "current" });
-    } catch {
-      // Already signed out server-side; clear local state regardless.
-    }
+    const supabase = createClient();
+    await supabase.auth.signOut();
     setUser(null);
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, loading, configured: isAppwriteConfigured, signIn, signOut, refresh }),
+    () => ({ user, loading, configured: true, signIn, signOut, refresh }),
     [user, loading, signIn, signOut, refresh],
   );
 

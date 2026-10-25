@@ -9,7 +9,7 @@ export default function ServicesPage() {
       <PageHeader
         crumb="Services"
         title="What we do"
-        description="Four services, one accountable team. Every engagement starts with a free consultation."
+        description="Seven services, one accountable team. Every engagement starts with a free consultation."
       />
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">

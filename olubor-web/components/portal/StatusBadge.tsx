@@ -1,4 +1,4 @@
-import { STATUS_LABELS, type ApplicationStatus } from "@/lib/appwrite/types";
+import { STATUS_LABELS, type ApplicationStatus } from "@/lib/supabase/types";
 
 const TONES: Record<string, string> = {
   neutral: "bg-gray-100 text-ink-2 border-gray-200",
@@ -9,7 +9,7 @@ const TONES: Record<string, string> = {
 };
 
 export default function StatusBadge({ status }: { status: ApplicationStatus }) {
-  const meta = STATUS_LABELS[status] ?? STATUS_LABELS.draft;
+  const meta = STATUS_LABELS[status] ?? STATUS_LABELS.submitted;
   return (
     <span
       className={`inline-flex items-center px-2.5 py-1 rounded-full border text-[12px] font-semibold whitespace-nowrap ${

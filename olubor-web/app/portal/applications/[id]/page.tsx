@@ -6,9 +6,8 @@ import { useParams } from "next/navigation";
 import { ArrowLeft, Construction, LoaderCircle } from "lucide-react";
 import RequireAuth from "@/components/portal/RequireAuth";
 import StatusBadge from "@/components/portal/StatusBadge";
-import { getTables } from "@/lib/appwrite/client";
-import { APPWRITE_DATABASE_ID, TABLES } from "@/lib/appwrite/config";
-import { PROGRAM_LABELS, type Application } from "@/lib/appwrite/types";
+import { createClient } from "@/lib/supabase/client";
+import { PROGRAM_LABELS, type Application } from "@/lib/supabase/types";
 
 /** The wizard lands here next; for now it confirms the draft was created. */
 const STEPS = [
@@ -27,16 +26,15 @@ const STEPS = [
 
 const LOAD_ERROR = "We could not open this application. It may belong to another account.";
 
-/**
- * Module scope, deliberately: the effect below must not call setState
- * synchronously, so it calls this and updates state from the promise callbacks.
- */
-async function fetchApplication(rowId: string): Promise<Application> {
-  return getTables().getRow<Application>({
-    databaseId: APPWRITE_DATABASE_ID,
-    tableId: TABLES.applications,
-    rowId,
-  });
+async function fetchApplication(id: string): Promise<Application> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("applications")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return data;
 }
 
 export default function ApplicationPage() {
@@ -127,12 +125,12 @@ function ApplicationDetail() {
         </div>
 
         <h2 className="text-title text-ink mb-2">
-          {application.target_university || "Your application"}
+          {application.full_name}&rsquo;s application
         </h2>
         <p className="text-ink-2 text-[15px] leading-relaxed">
-          {application.target_course
-            ? `${application.target_course}${application.target_intake ? ` · ${application.target_intake}` : ""}`
-            : "Add your target university and course in the first step."}
+          Submitted on {new Date(application.submitted_at).toLocaleDateString("en-GB", {
+            day: "numeric", month: "long", year: "numeric",
+          })}
         </p>
       </section>
 
@@ -144,8 +142,8 @@ function ApplicationDetail() {
           <div>
             <h3 className="font-bold text-ink mb-1">The application form is the next step</h3>
             <p className="text-ink-2 text-[15px] leading-relaxed">
-              Your draft exists and is saved. The fill-in form below is being built as the next
-              piece of work.
+              Your application exists and is saved. The full tracking form is being built as the
+              next piece of work.
             </p>
           </div>
         </div>
