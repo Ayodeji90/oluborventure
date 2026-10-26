@@ -80,6 +80,16 @@ export type Profile = {
   is_admin: boolean;
 };
 
+export type ContactMessage = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  service: string | null;
+  message: string;
+  created_at: string;
+};
+
 /** Supabase database schema type used by the typed client. */
 export interface Database {
   public: {
@@ -106,6 +116,12 @@ export interface Database {
         Row: Profile;
         Insert: Partial<Profile>;
         Update: Partial<Profile>;
+        Relationships: never[];
+      };
+      contact_messages: {
+        Row: ContactMessage;
+        Insert: Partial<ContactMessage>;
+        Update: Partial<ContactMessage>;
         Relationships: never[];
       };
     };
