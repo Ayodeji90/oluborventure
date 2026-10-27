@@ -30,6 +30,13 @@ export const metadata: Metadata = {
     default: "Olubor Ventures & Educational Consult",
     template: "%s | Olubor Ventures",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico?v=2", type: "image/x-icon", sizes: "64x64" },
+      { url: "/icon.png?v=2", type: "image/png", sizes: "64x64" },
+    ],
+    apple: [{ url: "/apple-icon.png?v=2", type: "image/png", sizes: "180x180" }],
+  },
   description:
     "Study abroad, scholarships, visa assistance, and international job placements — guided by counselors who have done it 500+ times.",
 };
