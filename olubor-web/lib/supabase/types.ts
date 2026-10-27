@@ -112,55 +112,63 @@ export type ContactMessage = {
   created_at: string;
 };
 
+type InsertWithDefaults<Row, Required extends keyof Row> =
+  Pick<Row, Required> & Partial<Omit<Row, Required>>;
+
 /** Supabase database schema type used by the typed client. */
 export interface Database {
   public: {
     Tables: {
       applications: {
         Row: Application;
-        Insert: Partial<Application>;
+        Insert: InsertWithDefaults<Application, "reference_code" | "program_type" | "full_name" | "email">;
         Update: Partial<Application>;
         Relationships: never[];
       };
       application_references: {
         Row: ApplicationReference;
-        Insert: Partial<ApplicationReference>;
+        Insert: InsertWithDefaults<ApplicationReference, "application_id" | "slot" | "full_name">;
         Update: Partial<ApplicationReference>;
         Relationships: never[];
       };
       application_drafts: {
         Row: ApplicationDraft;
-        Insert: Partial<ApplicationDraft>;
+        Insert: InsertWithDefaults<ApplicationDraft, "user_id" | "program_type">;
         Update: Partial<ApplicationDraft>;
         Relationships: never[];
       };
       application_draft_documents: {
         Row: ApplicationDraftDocument;
-        Insert: Partial<ApplicationDraftDocument>;
+        Insert: InsertWithDefaults<ApplicationDraftDocument, "draft_id" | "document_type" | "file_path" | "file_name" | "size_bytes">;
         Update: Partial<ApplicationDraftDocument>;
         Relationships: never[];
       };
       application_documents: {
         Row: ApplicationDocument;
-        Insert: Partial<ApplicationDocument>;
+        Insert: InsertWithDefaults<ApplicationDocument, "application_id" | "document_type" | "file_path">;
         Update: Partial<ApplicationDocument>;
         Relationships: never[];
       };
       profiles: {
         Row: Profile;
-        Insert: Partial<Profile>;
+        Insert: InsertWithDefaults<Profile, "id" | "email">;
         Update: Partial<Profile>;
         Relationships: never[];
       };
       contact_messages: {
         Row: ContactMessage;
-        Insert: Partial<ContactMessage>;
+        Insert: InsertWithDefaults<ContactMessage, "name" | "email" | "message">;
         Update: Partial<ContactMessage>;
         Relationships: never[];
       };
     };
     Views: { [_ in never]: never };
-    Functions: { [_ in never]: never };
+    Functions: {
+      consume_contact_rate_limit: {
+        Args: { p_bucket_key: string; p_window_start: string };
+        Returns: number;
+      };
+    };
   };
 }
 

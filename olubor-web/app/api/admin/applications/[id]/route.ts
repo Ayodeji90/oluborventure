@@ -3,6 +3,8 @@ import { getServerClient } from "@/lib/supabase/server";
 import { ALL_STATUSES, type ApplicationStatus } from "@/lib/supabase/types";
 import { getAuthenticatedAdmin } from "@/lib/supabase/auth";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 /**
  * PATCH /api/admin/applications/[id]
  *
@@ -18,6 +20,9 @@ export async function PATCH(
   }
 
   const { id } = await params;
+  if (!UUID_RE.test(id)) {
+    return NextResponse.json({ error: "Invalid application ID." }, { status: 400 });
+  }
 
   let body: { status?: string };
   try {

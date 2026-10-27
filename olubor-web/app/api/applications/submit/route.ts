@@ -4,6 +4,7 @@ import { getServerClient } from "@/lib/supabase/server";
 import {
   SLUG_TO_PROGRAM,
   PROGRAM_PREFIXES,
+  type Database,
   type ProgramType,
 } from "@/lib/supabase/types";
 
@@ -142,7 +143,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "WAEC/NECO serial and PIN are required." }, { status: 400 });
   }
 
-  const applicationData = {
+  const applicationData: Omit<
+    Database["public"]["Tables"]["applications"]["Insert"],
+    "reference_code"
+  > = {
     user_id: user.id,
     program_type: programType,
     status: "submitted" as const,
@@ -154,7 +158,7 @@ export async function POST(request: Request) {
     ...(isAcademic && {
       waec_serial: v.waecSerial || null,
       waec_pin: v.waecPin || null,
-      visa_refusal: body.hasVisaRefusal,
+      visa_refusal: body.hasVisaRefusal ?? false,
     }),
     // Flight booking fields
     ...(isFlight && {
@@ -178,10 +182,9 @@ export async function POST(request: Request) {
 
     const { data: insertData, error } = await supabase
       .from("applications")
-      .insert({ ...applicationData, reference_code: referenceCode } as never)
+      .insert({ ...applicationData, reference_code: referenceCode })
       .select("id, reference_code")
       .single();
-    const data = insertData as unknown as { id: string; reference_code: string } | null;
 
     if (error) {
       // Unique constraint violation on reference_code — retry
@@ -193,7 +196,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const applicationId = data!.id;
+    if (!insertData) {
+      console.error("[submit] insert returned no application without an error");
+      return NextResponse.json(
+        { error: "Could not save your application. Please try again." },
+        { status: 500 },
+      );
+    }
+
+    const applicationId = insertData.id;
 
     // Save referees (MRes and PhD only)
     if (
@@ -210,15 +221,17 @@ export async function POST(request: Request) {
       }
 
       if (refs.length > 0) {
-        const { error: refsError } = await supabase.from("application_references").insert(
+        const references: Database["public"]["Tables"]["application_references"]["Insert"][] =
           refs.map((r) => ({
             application_id: applicationId,
             slot: r.slot,
             full_name: r.name,
             email: r.email.toLowerCase(),
             institution: r.institution,
-          })) as never,
-        );
+          }));
+        const { error: refsError } = await supabase
+          .from("application_references")
+          .insert(references);
         if (refsError) {
           console.error("[submit] references insert failed", refsError);
           await supabase.from("applications").delete().eq("id", applicationId);
@@ -238,8 +251,10 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Could not attach your saved documents. Please try again." }, { status: 500 });
       }
       if (draftDocuments?.length) {
+        const documents: Database["public"]["Tables"]["application_documents"]["Insert"][] =
+          draftDocuments.map((document) => ({ application_id: applicationId, ...document }));
         const { error: attachError } = await supabase.from("application_documents").insert(
-          draftDocuments.map((document) => ({ application_id: applicationId, ...document })) as never,
+          documents,
         );
         if (attachError) {
           console.error("[submit] could not attach saved draft documents", attachError);
