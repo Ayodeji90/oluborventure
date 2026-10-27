@@ -5,5 +5,8 @@
   "description": "Static marketing page served from the repository root. The Next.js application lives in olubor-web/.",
   "scripts": {
     "build": "rm -rf dist && mkdir -p dist && cp index.html logo.png logo-white.png dist/"
+  },
+  "devDependencies": {
+    "supabase": "^2.122.0"
   }
 }
