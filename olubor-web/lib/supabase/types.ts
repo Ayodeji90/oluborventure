@@ -22,6 +22,7 @@ export type ApplicationStatus =
 // required by @supabase/supabase-js v2 generic Database type checking.
 export type Application = {
   id: string;
+  user_id: string | null;
   reference_code: string;
   program_type: ProgramType;
   status: ApplicationStatus;
@@ -61,6 +62,27 @@ export type ApplicationReference = {
   full_name: string;
   email: string | null;
   institution: string | null;
+};
+
+export type ApplicationDraft = {
+  id: string;
+  user_id: string;
+  program_type: ProgramType;
+  form_data: Record<string, string>;
+  same_as_phone: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ApplicationDraftDocument = {
+  id: string;
+  draft_id: string;
+  document_type: string;
+  file_path: string;
+  file_name: string;
+  mime_type: string | null;
+  size_bytes: number;
+  uploaded_at: string;
 };
 
 export type ApplicationDocument = {
@@ -104,6 +126,18 @@ export interface Database {
         Row: ApplicationReference;
         Insert: Partial<ApplicationReference>;
         Update: Partial<ApplicationReference>;
+        Relationships: never[];
+      };
+      application_drafts: {
+        Row: ApplicationDraft;
+        Insert: Partial<ApplicationDraft>;
+        Update: Partial<ApplicationDraft>;
+        Relationships: never[];
+      };
+      application_draft_documents: {
+        Row: ApplicationDraftDocument;
+        Insert: Partial<ApplicationDraftDocument>;
+        Update: Partial<ApplicationDraftDocument>;
         Relationships: never[];
       };
       application_documents: {

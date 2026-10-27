@@ -53,7 +53,7 @@ export default function ServicesPage() {
               <Link
                 key={s.slug}
                 href={`/services/${s.slug}`}
-                className="group bg-white rounded-2xl border border-gray-200 p-7 flex flex-col hover:border-plum-100 hover:shadow-md transition-all"
+                className="group reveal-on-scroll card-hover bg-white rounded-2xl border border-gray-200 p-7 flex flex-col hover:border-plum-100"
               >
                 <div className="flex items-start justify-between mb-6">
                   <div className="w-11 h-11 rounded-xl bg-plum-50 border border-plum-100 flex items-center justify-center">

@@ -6,8 +6,10 @@ export const instant = false;
 import { PROGRAM_LABELS, STATUS_LABELS, ALL_STATUSES, type Application, type ApplicationDocument, type ApplicationReference, type ApplicationStatus, type ProgramType } from "@/lib/supabase/types";
 import StatusUpdater from "@/components/admin/StatusUpdater";
 import { ArrowLeft, Download } from "lucide-react";
+import { requireAdmin } from "@/lib/supabase/auth";
 
 export default async function ApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const supabase = getServerClient();
 

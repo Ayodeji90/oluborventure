@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
 import ApplicationForm from "@/components/apply/ApplicationForm";
+import { getSessionClient } from "@/lib/supabase/server";
+import { SLUG_TO_PROGRAM } from "@/lib/supabase/types";
 
 /* ─── Programme metadata ────────────────────────────────────────── */
 const PROGRAMS: Record<string, { label: string; description: string }> = {
@@ -80,9 +84,9 @@ export default async function ProgramApplicationPage({
             className="flex items-center gap-2 text-white/50 text-[13px] mb-7"
             aria-label="Breadcrumb"
           >
-            <a href="/apply" className="hover:text-white/80 transition">
+            <Link href="/apply" className="hover:text-white/80 transition">
               Get Started
-            </a>
+            </Link>
             <span aria-hidden>›</span>
             <span className="text-white/80">{meta.label}</span>
           </nav>
@@ -104,9 +108,34 @@ export default async function ProgramApplicationPage({
       {/* ── Form on sand background ───────────────────────────── */}
       <section className="py-16 px-4 bg-sand min-h-[60vh]">
         <div className="max-w-3xl mx-auto">
-          <ApplicationForm program={program} programLabel={meta.label} />
+          <Suspense fallback={<div className="min-h-96" aria-busy="true" />}>
+            <AuthenticatedApplication program={program} programLabel={meta.label} />
+          </Suspense>
         </div>
       </section>
     </>
   );
+}
+
+async function AuthenticatedApplication({
+  program,
+  programLabel,
+}: {
+  program: string;
+  programLabel: string;
+}) {
+  const supabase = await getSessionClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    const programType = SLUG_TO_PROGRAM[program];
+    if (!programType) notFound();
+    const query = new URLSearchParams({
+      program: programType,
+      next: `/apply/${program}`,
+    });
+    redirect(`/portal/sign-up?${query.toString()}`);
+  }
+
+  return <ApplicationForm program={program} programLabel={programLabel} />;
 }

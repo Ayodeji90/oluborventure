@@ -1,9 +1,11 @@
 import { getServerClient } from "@/lib/supabase/server";
 import ApplicationsTable from "@/components/admin/ApplicationsTable";
+import { requireAdmin } from "@/lib/supabase/auth";
 
 export const instant = false;
 
 export default async function AdminPage() {
+  await requireAdmin();
   const supabase = getServerClient();
   const { data: applications, error } = await supabase
     .from("applications")

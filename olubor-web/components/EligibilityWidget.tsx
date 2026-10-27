@@ -19,9 +19,19 @@ export default function EligibilityWidget() {
   const [contact, setContact] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
+  const whatsappMessage = [
+    "Hello Olubor, I would like advice based on my eligibility check.",
+    `Help needed: ${service || "Not selected"}`,
+    `Destination: ${destination}`,
+    `Education: ${level}`,
+    `Budget: ${budget}`,
+    `Contact: ${contact}`,
+  ].join("\n");
+  const whatsappHref = `https://wa.me/447404662298?text=${encodeURIComponent(whatsappMessage)}`;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Phase 3: POST to Appwrite endpoint. For now simulate indicative match.
+    // This is currently an indicative client-side check; requests are not persisted.
     setSubmitted(true);
   };
 
@@ -29,16 +39,31 @@ export default function EligibilityWidget() {
     return (
       <div className="bg-white rounded-xl border border-gray-200 shadow-xl p-8 text-left">
         <CircleCheckBig className="w-10 h-10 text-green-600 mb-4" />
-        <h3 className="text-xl font-bold text-ink mb-2">Request received.</h3>
-        <p className="text-ink-2 text-[15px] mb-6 leading-relaxed">
-          A counselor will review your profile and reach out within one working
-          day with matched programs and next steps.
+        <h3 className="text-xl font-bold text-ink mb-2">Your eligibility summary is ready.</h3>
+        <p className="text-ink-2 text-[15px] mb-5 leading-relaxed">
+          These answers have not been saved or sent. Review the summary, then choose WhatsApp if you want a counselor to see it.
         </p>
-        <button
-          onClick={() => setSubmitted(false)}
-          className="text-purple font-semibold text-[15px] hover:underline underline-offset-4"
+        <dl className="grid grid-cols-2 gap-3 rounded-lg bg-sand p-4 mb-6 text-sm">
+          <div><dt className="text-ink-3">Help with</dt><dd className="font-semibold text-ink">{service || "Not selected"}</dd></div>
+          <div><dt className="text-ink-3">Destination</dt><dd className="font-semibold text-ink">{destination}</dd></div>
+          <div><dt className="text-ink-3">Education</dt><dd className="font-semibold text-ink">{level}</dd></div>
+          <div><dt className="text-ink-3">Budget</dt><dd className="font-semibold text-ink">{budget}</dd></div>
+          <div className="col-span-2"><dt className="text-ink-3">Contact</dt><dd className="font-semibold text-ink break-all">{contact}</dd></div>
+        </dl>
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mb-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-purple px-5 font-semibold text-white hover:bg-purple-mid transition"
         >
-          Check another profile
+          Send summary on WhatsApp <ChevronRight className="w-4 h-4" />
+        </a>
+        <button
+          type="button"
+          onClick={() => setSubmitted(false)}
+          className="block text-purple font-semibold text-[15px] hover:underline underline-offset-4"
+        >
+          Edit answers
         </button>
       </div>
     );
@@ -116,7 +141,7 @@ export default function EligibilityWidget() {
           Check my eligibility <ChevronRight className="w-4 h-4" />
         </button>
         <p className="text-[13px] text-ink-3 text-center">
-          Free consultation · No commitment · Reply within 1 working day
+          Your answers stay in this browser until you choose to send them.
         </p>
       </form>
     </div>

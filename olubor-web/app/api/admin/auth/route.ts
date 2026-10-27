@@ -1,18 +1,11 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getSessionClient } from "@/lib/supabase/server";
 import { isAdminUser } from "@/lib/supabase/admin";
-
-const COOKIE_OPTS = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "lax" as const,
-  path: "/",
-};
 
 /**
  * POST /api/admin/auth
  *
- * Admin login — signs in with email/password and sets httpOnly cookies.
+ * Admin login — signs in through the Supabase SSR client and sets its session cookies.
  * Body: { email: string, password: string }
  */
 export async function POST(request: Request) {
@@ -23,26 +16,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  }
   const { email, password } = body;
-  if (!email || !password) {
+  if (typeof email !== "string" || typeof password !== "string" || !email.trim() || !password) {
     return NextResponse.json(
       { error: "email and password are required." },
       { status: 400 },
     );
   }
 
-  // Use anon key client (not service_role) to sign in
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
+  const supabase = await getSessionClient();
 
   const { data, error } = await supabase.auth.signInWithPassword({
-    email,
+    email: email.trim().toLowerCase(),
     password,
   });
 
-  if (error || !data.user || !data.session) {
+  if (error || !data.user) {
     return NextResponse.json(
       { error: "Invalid credentials." },
       { status: 401 },
@@ -52,22 +44,11 @@ export async function POST(request: Request) {
   // Verify the user has admin privileges
   const ok = await isAdminUser(data.user.id);
   if (!ok) {
+    await supabase.auth.signOut();
     return NextResponse.json({ error: "Access denied." }, { status: 401 });
   }
 
-  const response = NextResponse.json({ ok: true });
-
-  response.cookies.set("sb-access-token", data.session.access_token, {
-    ...COOKIE_OPTS,
-    maxAge: 3600,
-  });
-
-  response.cookies.set("sb-refresh-token", data.session.refresh_token, {
-    ...COOKIE_OPTS,
-    maxAge: 7 * 24 * 3600,
-  });
-
-  return response;
+  return NextResponse.json({ ok: true });
 }
 
 /**
@@ -76,17 +57,7 @@ export async function POST(request: Request) {
  * Admin logout — clears session cookies.
  */
 export async function DELETE() {
-  const response = NextResponse.json({ ok: true });
-
-  response.cookies.set("sb-access-token", "", {
-    ...COOKIE_OPTS,
-    maxAge: 0,
-  });
-
-  response.cookies.set("sb-refresh-token", "", {
-    ...COOKIE_OPTS,
-    maxAge: 0,
-  });
-
-  return response;
+  const supabase = await getSessionClient();
+  await supabase.auth.signOut();
+  return NextResponse.json({ ok: true });
 }

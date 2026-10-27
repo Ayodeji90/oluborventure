@@ -29,25 +29,30 @@ export default function ContactPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const fd = new FormData(e.currentTarget);
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: fd.get("name"),
-        email: fd.get("email"),
-        phone: fd.get("phone"),
-        service: fd.get("service"),
-        message: fd.get("message"),
-      }),
-    });
-    if (res.ok) {
-      setSent(true);
-    } else {
-      const j = await res.json().catch(() => ({}));
-      setError(j.error ?? "Something went wrong. Please try again.");
+    try {
+      const fd = new FormData(e.currentTarget);
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fd.get("name"),
+          email: fd.get("email"),
+          phone: fd.get("phone"),
+          service: fd.get("service"),
+          message: fd.get("message"),
+        }),
+      });
+      if (res.ok) {
+        setSent(true);
+      } else {
+        const j = await res.json().catch(() => ({}));
+        setError(j.error ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("We could not send your message. Check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

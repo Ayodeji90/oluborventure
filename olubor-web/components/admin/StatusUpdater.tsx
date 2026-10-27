@@ -4,18 +4,31 @@ import { ALL_STATUSES, STATUS_LABELS, type ApplicationStatus } from "@/lib/supab
 
 export default function StatusUpdater({ applicationId, currentStatus }: { applicationId: string; currentStatus: ApplicationStatus }) {
   const [status, setStatus] = useState<ApplicationStatus>(currentStatus);
+  const [savedStatus, setSavedStatus] = useState<ApplicationStatus>(currentStatus);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSave = async () => {
-    setSaving(true); setSaved(false);
-    await fetch(`/api/admin/applications/${applicationId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    setSaving(false); setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true); setSaved(false); setError(null);
+    try {
+      const response = await fetch(`/api/admin/applications/${applicationId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result.error ?? "Status could not be updated.");
+      }
+      setSavedStatus(status);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Status could not be updated.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -26,10 +39,11 @@ export default function StatusUpdater({ applicationId, currentStatus }: { applic
           <option key={s} value={s}>{STATUS_LABELS[s].label}</option>
         ))}
       </select>
-      <button onClick={handleSave} disabled={saving || status === currentStatus}
+      <button onClick={handleSave} disabled={saving || status === savedStatus}
         className="h-10 px-5 bg-purple-mid text-white text-[14px] font-semibold rounded-xl hover:bg-purple transition disabled:opacity-50 disabled:cursor-not-allowed">
         {saving ? "Saving…" : saved ? "Saved ✓" : "Save status"}
       </button>
+      {error && <p role="alert" className="w-full text-[13px] text-red-700">{error}</p>}
     </div>
   );
 }

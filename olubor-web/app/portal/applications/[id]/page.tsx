@@ -3,26 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, Construction, LoaderCircle } from "lucide-react";
+import { ArrowLeft, LoaderCircle } from "lucide-react";
 import RequireAuth from "@/components/portal/RequireAuth";
 import StatusBadge from "@/components/portal/StatusBadge";
 import { createClient } from "@/lib/supabase/client";
 import { PROGRAM_LABELS, type Application } from "@/lib/supabase/types";
-
-/** The wizard lands here next; for now it confirms the draft was created. */
-const STEPS = [
-  "Your details",
-  "Programme & target",
-  "Passport",
-  "Degree certificates & transcripts",
-  "WAEC / NECO & scratch card",
-  "Detailed CV",
-  "Two references",
-  "Statement of Purpose",
-  "Previous visa refusals",
-  "Research proposal",
-  "Review & submit",
-];
 
 const LOAD_ERROR = "We could not open this application. It may belong to another account.";
 
@@ -135,37 +120,11 @@ function ApplicationDetail() {
       </section>
 
       <section className="border border-plum-100 bg-plum-50 rounded-xl p-6 sm:p-7">
-        <div className="flex items-start gap-3">
-          <span className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shrink-0">
-            <Construction className="w-5 h-5 text-purple-mid" />
-          </span>
-          <div>
-            <h3 className="font-bold text-ink mb-1">The application form is the next step</h3>
-            <p className="text-ink-2 text-[15px] leading-relaxed">
-              Your application exists and is saved. The full tracking form is being built as the
-              next piece of work.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-bold text-ink mb-4">
-          What the application will cover
-        </h3>
-        <ol className="space-y-2">
-          {STEPS.map((step, index) => (
-            <li
-              key={step}
-              className="flex items-center gap-3 border border-gray-200 rounded-lg bg-white px-4 py-3"
-            >
-              <span className="w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0 bg-gray-100 text-ink-3">
-                {index + 1}
-              </span>
-              <span className="text-[15px] text-ink-2">{step}</span>
-            </li>
-          ))}
-        </ol>
+        <h3 className="font-bold text-ink mb-1">Your application has been submitted</h3>
+        <p className="text-ink-2 text-[15px] leading-relaxed">
+          Your application is linked to this account. A counselor will review it and follow up
+          within one working day if anything else is needed.
+        </p>
       </section>
     </div>
   );

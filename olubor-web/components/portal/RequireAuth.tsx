@@ -8,9 +8,8 @@ import { useAuth } from "./AuthProvider";
 /**
  * Client-side gate for portal routes.
  *
- * Appwrite's web SDK keeps the session in browser storage, so the server has no
- * cookie to check — the guard has to run in the browser. Redirects to sign-in
- * once we know there is no session.
+ * This is a UI guard. Database row-level security and route authorization remain
+ * the actual data boundary.
  */
 export default function RequireAuth({ children }: { children: ReactNode }) {
   const { user, loading, configured } = useAuth();
@@ -43,7 +42,7 @@ export default function RequireAuth({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
-/** Shown before Appwrite has been wired up, so the page is never a blank shell. */
+/** Shown before Supabase has been configured, so the page is never a blank shell. */
 export function SetupNotice() {
   return (
     <div className="border border-gray-200 rounded-xl p-8 sm:p-10 bg-white max-w-2xl">
@@ -54,7 +53,7 @@ export function SetupNotice() {
         <h2 className="text-xl font-bold text-ink">The portal is not connected yet</h2>
       </div>
       <p className="text-ink-2 text-[15px] leading-relaxed mb-5">
-        This screen goes live once the Appwrite backend is configured. Two steps:
+        This screen goes live once the Supabase backend is configured. Two steps:
       </p>
       <ol className="space-y-3 text-[15px] text-ink-2 leading-relaxed mb-6">
         <li className="flex gap-3">
@@ -62,16 +61,16 @@ export function SetupNotice() {
           <span>
             Create a project at{" "}
             <a
-              href="https://cloud.appwrite.io"
+              href="https://supabase.com/dashboard"
               target="_blank"
               rel="noreferrer"
               className="text-purple-mid font-semibold hover:underline underline-offset-4"
             >
-              cloud.appwrite.io
+              Supabase dashboard
             </a>
             , then copy <code className="text-[13px] bg-plum-50 px-1.5 py-0.5 rounded">.env.example</code>{" "}
             to <code className="text-[13px] bg-plum-50 px-1.5 py-0.5 rounded">.env.local</code> and
-            fill in the endpoint, project id and API key.
+              fill in the project URL and public anon key.
           </span>
         </li>
         <li className="flex gap-3">
@@ -79,9 +78,9 @@ export function SetupNotice() {
           <span>
             Run{" "}
             <code className="text-[13px] bg-plum-50 px-1.5 py-0.5 rounded">
-              npm run provision
+              supabase/migrations
             </code>{" "}
-            to create the database, tables and document bucket.
+              apply the SQL migrations to create the tables and private document bucket.
           </span>
         </li>
       </ol>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, LoaderCircle } from "lucide-react";
 import { useAuth } from "@/components/portal/AuthProvider";
 
@@ -11,26 +11,44 @@ const inputCls =
 const labelCls = "block text-sm font-semibold text-ink mb-2";
 
 export default function SignInPage() {
-  const { user, loading, signIn } = useAuth();
+  return (
+    <Suspense fallback={<div className="min-h-96" aria-busy="true" />}>
+      <SignInForm />
+    </Suspense>
+  );
+}
+
+function SignInForm() {
+  const { user, loading, configured, signIn } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const requestedNext = searchParams.get("next");
+  const nextPath = requestedNext?.startsWith("/apply/") && !requestedNext.startsWith("//")
+    ? requestedNext
+    : "/portal";
 
   // Already signed in? Go straight to the dashboard.
   useEffect(() => {
-    if (!loading && user) router.replace("/portal");
-  }, [loading, user, router]);
+    if (!loading && user && nextPath) router.replace(nextPath);
+  }, [loading, user, nextPath, router]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setBusy(true);
     setError(null);
+    if (!configured) {
+      setError("The applicant portal is not configured yet. Please contact Olubor for help.");
+      setBusy(false);
+      return;
+    }
     try {
       await signIn(email.trim().toLowerCase(), password);
-      router.replace("/portal");
+      router.replace(nextPath);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "We could not sign you in just now. Please try again.";
       setError(msg);

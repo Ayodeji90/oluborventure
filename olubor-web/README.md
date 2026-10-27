@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Olubor Ventures website
 
-## Getting Started
+This project is a Next.js website for Olubor Ventures. Supabase provides applicant authentication, the Postgres database, and private document storage. See [the Supabase guide](docs/supabase.md) for environment setup, access rules, and database migrations.
 
-First, run the development server:
+## Local development
+
+Requirements: Node.js 20 or later and npm.
 
 ```bash
+npm ci
+cp .env.example .env.local
+# Fill in the Supabase and, if used, Resend values in .env.local.
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Available checks:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Main directories
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/` — public pages, applicant portal, admin pages, and API routes.
+- `components/` — shared site, application, portal, and admin UI.
+- `lib/supabase/` — browser, server, admin, and authorization clients.
+- `supabase/migrations/` — versioned database schema and security changes.
+- `docs/supabase.md` — Supabase setup and operating guide.

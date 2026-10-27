@@ -37,7 +37,7 @@ export default function HeroRotator() {
             key={s.src}
             src={s.src}
             alt=""
-            className="hero-slide absolute inset-0 h-full w-full object-cover"
+            className={`hero-slide absolute inset-0 h-full w-full object-cover ${i === active ? "hero-slide-active" : ""}`}
             style={{ opacity: i === active ? 1 : 0 }}
             loading={i === 0 ? "eager" : "lazy"}
           />

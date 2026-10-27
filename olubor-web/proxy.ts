@@ -1,26 +1,41 @@
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import type { CookieOptions } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
+
+/**
+ * Refresh Supabase SSR cookies before protected pages and applicant routes run.
+ * This is only a session-refresh convenience; pages, handlers, and RLS perform
+ * the actual authorization checks.
+ */
+export async function proxy(request: NextRequest) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) return NextResponse.next({ request });
+
+  let response = NextResponse.next({ request });
+  const supabase = createServerClient(url, anonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        response = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+      },
+    },
+  });
+
+  await supabase.auth.getUser();
+  return response;
+}
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/portal/:path*",
+    "/apply/:path*",
+    "/api/admin/:path*",
+    "/api/applications/:path*",
+  ],
 };
-
-export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Allow the login page and the auth API through
-  if (pathname === "/admin/login" || pathname === "/api/admin/auth") {
-    return NextResponse.next();
-  }
-
-  // Check for the access token cookie
-  const accessToken = request.cookies.get("sb-access-token")?.value;
-  if (!accessToken) {
-    if (pathname.startsWith("/api/")) {
-      return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
-    }
-    return NextResponse.redirect(new URL("/admin/login", request.url));
-  }
-
-  return NextResponse.next();
-}

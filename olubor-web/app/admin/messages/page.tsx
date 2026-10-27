@@ -1,10 +1,12 @@
 import { getServerClient } from "@/lib/supabase/server";
 import { type ContactMessage } from "@/lib/supabase/types";
 import { Mail, Phone } from "lucide-react";
+import { requireAdmin } from "@/lib/supabase/auth";
 
 export const instant = false;
 
 export default async function MessagesPage() {
+  await requireAdmin();
   const supabase = getServerClient();
   const { data: messages, error } = await supabase
     .from("contact_messages")

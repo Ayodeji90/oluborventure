@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  * both of which suspend while prerendering a route with a dynamic param that
  * isn't known at build time (application ids belong to users, so there is no
  * `generateStaticParams`). Suspense lets the shell prerender; the real UI
- * streams in on the client, where the Appwrite session lives anyway.
+ * streams in on the client while Supabase SSR cookies carry the session.
  */
 function PortalShellFallback() {
   return (

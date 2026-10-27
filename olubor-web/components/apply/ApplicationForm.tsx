@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Upload,
   X,
@@ -9,8 +9,12 @@ import {
   MessageCircle,
   ArrowLeft,
   Send,
+  Save,
+  LoaderCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { ApplicationDraftDocument } from "@/lib/supabase/types";
 
 /* ─── Upload constraints ──────────────────────────────────────── */
 const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -166,6 +170,8 @@ function FileField({
   required = false,
   files,
   onChange,
+  savedFiles = [],
+  onRemoveSaved,
 }: {
   id: string;
   label: string;
@@ -175,10 +181,12 @@ function FileField({
   required?: boolean;
   files: File[];
   onChange: (files: File[]) => void;
+  savedFiles?: Pick<ApplicationDraftDocument, "id" | "file_name">[];
+  onRemoveSaved?: (id: string) => void;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   const [fileError, setFileError] = useState<string | null>(null);
-  const hasFiles = files.length > 0;
+  const hasFiles = files.length > 0 || savedFiles.length > 0;
   const acceptLabel = accept
     .split(",")
     .map((s) => s.replace(".", "").toUpperCase())
@@ -198,14 +206,11 @@ function FileField({
         <p className="text-[13px] text-ink-3 mb-2 leading-relaxed">{helpText}</p>
       )}
 
-      <button
-        type="button"
-        onClick={() => ref.current?.click()}
-        aria-label={`Upload ${label}`}
-        className={`w-full rounded-xl border-2 border-dashed p-5 text-left transition-all focus:outline-none focus:ring-2 focus:ring-purple-mid/30 ${
+      <div
+        className={`w-full rounded-xl border-2 border-dashed p-5 transition-all focus-within:ring-2 focus-within:ring-purple-mid/30 ${
           hasFiles
             ? "border-emerald-400 bg-emerald-50"
-            : "border-plum-100 bg-plum-50/40 hover:border-purple-mid/50 hover:bg-plum-50"
+            : "border-plum-100 bg-plum-50/40"
         }`}
       >
         <input
@@ -236,50 +241,61 @@ function FileField({
           }}
         />
 
-        {!hasFiles ? (
-          <div className="flex items-center gap-3">
+        <div className="space-y-2">
+          {savedFiles.map((file) => (
+            <div key={file.id} className="flex items-center gap-2.5">
+              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">
+                <FileText className="w-4 h-4 text-emerald-600" />
+              </div>
+              <span className="text-[13px] text-ink-2 flex-1 truncate">{file.file_name}</span>
+              {onRemoveSaved && (
+                <button
+                  type="button"
+                  onClick={() => onRemoveSaved(file.id)}
+                  aria-label={`Remove saved ${file.file_name}`}
+                  className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition shrink-0"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          ))}
+          {files.map((file, index) => (
+            <div key={`${file.name}:${file.lastModified}`} className="flex items-center gap-2.5">
+              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">
+                <FileText className="w-4 h-4 text-emerald-600" />
+              </div>
+              <span className="text-[13px] text-ink-2 flex-1 truncate">{file.name}</span>
+              <button
+                type="button"
+                onClick={() => onChange(files.filter((_, fileIndex) => fileIndex !== index))}
+                aria-label={`Remove ${file.name}`}
+                className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition shrink-0"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => ref.current?.click()}
+            aria-label={`${hasFiles ? "Add" : "Upload"} ${label}`}
+            className="flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-white/70 focus:outline-none focus:ring-2 focus:ring-purple-mid/30"
+          >
             <div className="w-10 h-10 rounded-xl bg-white border border-plum-100 flex items-center justify-center shrink-0">
               <Upload className="w-4 h-4 text-ink-3" />
             </div>
             <div>
               <p className="text-[14px] font-semibold text-ink-2">
-                Click to upload
+                {hasFiles ? "Add or replace files" : "Click to upload"}
               </p>
               <p className="text-[12px] text-ink-3">
-                {acceptLabel}
-                {multiple ? " · Multiple files allowed" : ""}
+                {acceptLabel}{multiple ? " · Multiple files allowed" : ""}
               </p>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {files.map((f, i) => (
-              <div key={i} className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">
-                  <FileText className="w-4 h-4 text-emerald-600" />
-                </div>
-                <span className="text-[13px] text-ink-2 flex-1 truncate">
-                  {f.name}
-                </span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onChange(files.filter((_, idx) => idx !== i));
-                  }}
-                  aria-label={`Remove ${f.name}`}
-                  className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition shrink-0"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-            {multiple && (
-              <p className="text-[12px] text-ink-3 pt-1">Click to add more files</p>
-            )}
-          </div>
-        )}
-      </button>
+          </button>
+        </div>
+      </div>
       {fileError && (
         <p className="mt-1.5 text-[13px] text-red-600">{fileError}</p>
       )}
@@ -351,11 +367,15 @@ function VisaSection({
   onHadChange,
   refusalFiles,
   onRefusalChange,
+  savedRefusalFiles,
+  onRemoveSaved,
 }: {
   had: string;
   onHadChange: (v: string) => void;
   refusalFiles: File[];
   onRefusalChange: (f: File[]) => void;
+  savedRefusalFiles: Pick<ApplicationDraftDocument, "id" | "file_name">[];
+  onRemoveSaved: (id: string) => void;
 }) {
   return (
     <div className="space-y-4">
@@ -379,6 +399,8 @@ function VisaSection({
           multiple
           files={refusalFiles}
           onChange={onRefusalChange}
+          savedFiles={savedRefusalFiles}
+          onRemoveSaved={onRemoveSaved}
         />
       )}
     </div>
@@ -388,6 +410,7 @@ function VisaSection({
 /* ─── Main ApplicationForm ────────────────────────────────────── */
 type TextData = Record<string, string>;
 type FileData = Record<string, File[]>;
+type SavedDraftDocument = Pick<ApplicationDraftDocument, "id" | "document_type" | "file_name" | "mime_type" | "size_bytes" | "uploaded_at">;
 
 interface Props {
   program: string;
@@ -395,6 +418,7 @@ interface Props {
 }
 
 export default function ApplicationForm({ program, programLabel }: Props) {
+  const router = useRouter();
   const [text, setText] = useState<TextData>({
     fullName: "",
     email: "",
@@ -443,6 +467,37 @@ export default function ApplicationForm({ program, programLabel }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [referenceCode, setReferenceCode] = useState("");
+  const [draftId, setDraftId] = useState<string | null>(null);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [savedDocuments, setSavedDocuments] = useState<SavedDraftDocument[]>([]);
+  const [savingDraft, setSavingDraft] = useState(false);
+  const [draftError, setDraftError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void fetch(`/api/applications/drafts?program=${encodeURIComponent(program)}`)
+      .then(async (response) => {
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error ?? "Could not load your saved application.");
+        return result;
+      })
+      .then((result) => {
+        if (!active) return;
+        if (result.draft) {
+          setDraftId(result.draft.id);
+          setText((previous) => ({ ...previous, ...(result.draft.form_data ?? {}) }));
+          setSameAsPhone(Boolean(result.draft.same_as_phone));
+          setSavedDocuments(result.documents ?? []);
+        }
+        setDraftLoaded(true);
+      })
+      .catch((err) => {
+        if (!active) return;
+        setDraftError(err instanceof Error ? err.message : "Could not load your saved application.");
+        setDraftLoaded(true);
+      });
+    return () => { active = false; };
+  }, [program]);
 
   const set = (k: string, v: string) =>
     setText((prev) => ({ ...prev, [k]: v }));
@@ -462,34 +517,85 @@ export default function ApplicationForm({ program, programLabel }: Props) {
     if (checked) set("whatsapp", text.phone);
   };
 
+  const saveDraft = async (leaveForm: boolean) => {
+    setSavingDraft(true);
+    setDraftError(null);
+    try {
+      const saveResponse = await fetch("/api/applications/drafts", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ program, formData: text, sameAsPhone }),
+      });
+      const saveResult = await saveResponse.json().catch(() => ({}));
+      if (!saveResponse.ok) throw new Error(saveResult.error ?? "Could not save your application.");
+      const savedDraftId = saveResult.id as string;
+      setDraftId(savedDraftId);
+
+      for (const [documentType, pendingFiles] of Object.entries(files)) {
+        for (const file of pendingFiles) {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("document_type", documentType);
+          const uploadResponse = await fetch(`/api/applications/drafts/${savedDraftId}/documents`, {
+            method: "POST",
+            body: formData,
+          });
+          const uploadResult = await uploadResponse.json().catch(() => ({}));
+          if (!uploadResponse.ok) throw new Error(uploadResult.error ?? `Could not save ${file.name}.`);
+          setSavedDocuments((previous) => [...previous, uploadResult.document]);
+          setFiles((previous) => ({
+            ...previous,
+            [documentType]: previous[documentType].filter((item) => item !== file),
+          }));
+        }
+      }
+
+      if (leaveForm) router.push("/portal");
+      return savedDraftId;
+    } catch (err) {
+      setDraftError(err instanceof Error ? err.message : "Could not save your application. Please try again.");
+      return null;
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+
+  const removeSavedDocument = async (documentId: string) => {
+    if (!draftId) return;
+    setDraftError(null);
+    const response = await fetch(
+      `/api/applications/drafts/${draftId}/documents?document_id=${encodeURIComponent(documentId)}`,
+      { method: "DELETE" },
+    );
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      setDraftError(result.error ?? "Could not remove the saved document.");
+      return;
+    }
+    setSavedDocuments((previous) => previous.filter((document) => document.id !== documentId));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      // 1. Submit text data
-      const res = await fetch("/api/applications/submit", {
+      const savedDraftId = await saveDraft(false);
+      if (!savedDraftId) return;
+      const response = await fetch("/api/applications/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           program,
           text,
+          draftId: savedDraftId,
           hasVisaRefusal: text.visaRefusal === "yes",
         }),
       });
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        throw new Error(j.error ?? "Submission failed. Please try again.");
-      }
-      const { application_id, reference_code } = await res.json();
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error ?? "Submission failed. Please try again.");
+      setReferenceCode(result.reference_code ?? "");
 
-      // 2. Upload files in parallel
-      const uploads = Object.entries(files).flatMap(([docType, fileList]) =>
-        fileList.map((file) => uploadDoc(application_id, docType, file)),
-      );
-      await Promise.all(uploads);
-
-      setReferenceCode(reference_code);
       setSubmitted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
@@ -498,39 +604,7 @@ export default function ApplicationForm({ program, programLabel }: Props) {
     }
   };
 
-  async function uploadDoc(applicationId: string, docType: string, file: File) {
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("document_type", docType);
-    // Fire and forget individual upload failures — don't block the confirmation screen
-    await fetch(`/api/applications/${applicationId}/documents`, {
-      method: "POST",
-      body: fd,
-    }).catch(console.error);
-  }
-
   const buildWhatsAppMsg = () => {
-    const fileList = Object.entries(files)
-      .filter(([, f]) => f.length > 0)
-      .map(([key, f]) => {
-        const names: Record<string, string> = {
-          passport: "International Passport",
-          degreeCerts: "Degree Certificate(s)",
-          transcripts: "Transcripts",
-          waecCert: "WAEC/NECO Certificate",
-          cv: "CV/Resume",
-          sop: "Statement of Purpose",
-          researchProposal: "Research Proposal",
-          visaRefusalLetter: "Visa Refusal Letter",
-          publishedPapers: "Published Papers",
-          mastersCert: "Masters Degree Certificate",
-          mastersTranscripts: "Masters Transcripts",
-          undergradCert: "Undergraduate Degree Certificate",
-          undergradTranscripts: "Undergraduate Transcripts",
-        };
-        return `✓ ${names[key] ?? key} (${f.length} file${f.length > 1 ? "s" : ""} ready)`;
-      });
-
     const lines = [
       `Hello Olubor Ventures!`,
       referenceCode ? `Reference: *${referenceCode}*` : "",
@@ -543,50 +617,21 @@ export default function ApplicationForm({ program, programLabel }: Props) {
       text.phone ? `Phone: ${text.phone}` : "",
     ];
 
-    if (program !== "flight-booking") {
-      if (text.waecSerial) lines.push(`WAEC Serial: ${text.waecSerial}`);
-      if (text.waecPin) lines.push(`WAEC PIN: ${text.waecPin}`);
-      if (text.ref1Name) {
-        lines.push(``, `*References*`);
-        lines.push(
-          `Ref 1: ${text.ref1Name} — ${text.ref1Email} (${text.ref1Institution})`
-        );
-        if (text.ref2Name)
-          lines.push(
-            `Ref 2: ${text.ref2Name} — ${text.ref2Email} (${text.ref2Institution})`
-          );
-      }
-      if (text.visaRefusal)
-        lines.push(`Visa refusal: ${text.visaRefusal === "yes" ? "Yes" : "No"}`);
-    } else {
-      lines.push(
-        ``,
-        `*Trip Details*`,
-        `Passport No: ${text.passportNumber}`,
-        `Passport Expiry: ${text.passportExpiry}`,
-        `Date of Birth: ${text.dob}`,
-        `From: ${text.departureCity}`,
-        `To: ${text.destinationCity}`,
-        `Travel Date: ${text.travelDate}`,
-        `Trip Type: ${text.tripType === "return" ? "Return" : "One-way"}`,
-        text.returnDate ? `Return Date: ${text.returnDate}` : "",
-        `Passengers: ${text.numPassengers}`,
-        text.preferredAirline ? `Preferred Airline: ${text.preferredAirline}` : ""
-      );
-    }
-
-    if (fileList.length > 0) {
-      lines.push(``, `*Documents ready*`);
-      lines.push(...fileList);
-      lines.push(``, `I will send the document files on this chat shortly.`);
-    }
-
     return lines.filter((l) => l !== "").join("\n");
   };
 
+  if (!draftLoaded) {
+    return (
+      <div className="flex items-center justify-center gap-3 py-16 text-ink-3" aria-busy="true">
+        <LoaderCircle className="h-5 w-5 animate-spin" />
+        <span>Checking for a saved application…</span>
+      </div>
+    );
+  }
+
   /* ── Confirmation screen ─────────────────────────────────────── */
   if (submitted) {
-    const uploadedFiles = Object.values(files).flat();
+    const uploadedFileCount = savedDocuments.length;
     return (
       <div className="text-center py-12">
         <div className="w-20 h-20 bg-emerald-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
@@ -617,16 +662,13 @@ export default function ApplicationForm({ program, programLabel }: Props) {
           Send via WhatsApp
         </a>
 
-        {uploadedFiles.length > 0 && (
+        {uploadedFileCount > 0 && (
           <div className="mt-8 max-w-sm mx-auto text-left bg-amber/10 border border-amber/30 rounded-xl p-5">
-            <p className="text-[14px] font-semibold text-amber-700 mb-2">
-              Don&apos;t forget your documents
-            </p>
+            <p className="text-[14px] font-semibold text-amber-700 mb-2">Documents uploaded</p>
             <p className="text-[13px] text-ink-2 leading-relaxed">
-              After sending the WhatsApp message above, please attach your{" "}
-              <strong>{uploadedFiles.length}</strong> document
-              {uploadedFiles.length > 1 ? "s" : ""} to the same chat so our
-              team can process them.
+              Your files are attached to this application and available to the counselor. No need to send them again. We received{" "}
+              <strong>{uploadedFileCount}</strong> document
+              {uploadedFileCount > 1 ? "s" : ""} for review.
             </p>
           </div>
         )}
@@ -651,6 +693,9 @@ export default function ApplicationForm({ program, programLabel }: Props) {
   /* ── Form ───────────────────────────────────────────────────── */
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="rounded-xl border border-plum-100 bg-white px-5 py-4 text-[14px] text-ink-2">
+        Your progress and uploaded documents can be saved securely. Return to your applicant dashboard whenever you are ready to continue.
+      </div>
       {/* ── FLIGHT BOOKING FORM ──────────────────────────────── */}
       {program === "flight-booking" && (
         <>
@@ -871,6 +916,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
               required
               files={files.passport}
               onChange={(f) => setF("passport", f)}
+              savedFiles={savedDocuments.filter((file) => file.document_type === "passport")}
+              onRemoveSaved={removeSavedDocument}
             />
           </FormSection>
 
@@ -887,6 +934,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
                   required
                   files={files.mastersCert}
                   onChange={(f) => setF("mastersCert", f)}
+                  savedFiles={savedDocuments.filter((file) => file.document_type === "mastersCert")}
+                  onRemoveSaved={removeSavedDocument}
                 />
                 <FileField
                   id="mastersTranscripts"
@@ -896,6 +945,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
                   required
                   files={files.mastersTranscripts}
                   onChange={(f) => setF("mastersTranscripts", f)}
+                  savedFiles={savedDocuments.filter((file) => file.document_type === "mastersTranscripts")}
+                  onRemoveSaved={removeSavedDocument}
                 />
                 <FileField
                   id="undergradCert"
@@ -905,6 +956,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
                   required
                   files={files.undergradCert}
                   onChange={(f) => setF("undergradCert", f)}
+                  savedFiles={savedDocuments.filter((file) => file.document_type === "undergradCert")}
+                  onRemoveSaved={removeSavedDocument}
                 />
                 <FileField
                   id="undergradTranscripts"
@@ -914,6 +967,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
                   required
                   files={files.undergradTranscripts}
                   onChange={(f) => setF("undergradTranscripts", f)}
+                  savedFiles={savedDocuments.filter((file) => file.document_type === "undergradTranscripts")}
+                  onRemoveSaved={removeSavedDocument}
                 />
               </>
             )}
@@ -929,6 +984,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
                   required
                   files={files.degreeCerts}
                   onChange={(f) => setF("degreeCerts", f)}
+                  savedFiles={savedDocuments.filter((file) => file.document_type === "degreeCerts")}
+                  onRemoveSaved={removeSavedDocument}
                 />
                 <FileField
                   id="transcripts"
@@ -938,6 +995,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
                   required
                   files={files.transcripts}
                   onChange={(f) => setF("transcripts", f)}
+                  savedFiles={savedDocuments.filter((file) => file.document_type === "transcripts")}
+                  onRemoveSaved={removeSavedDocument}
                 />
               </>
             )}
@@ -954,6 +1013,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
               required
               files={files.waecCert}
               onChange={(f) => setF("waecCert", f)}
+              savedFiles={savedDocuments.filter((file) => file.document_type === "waecCert")}
+              onRemoveSaved={removeSavedDocument}
             />
 
             <div className="grid sm:grid-cols-2 gap-4">
@@ -995,6 +1056,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
               required={program !== "bachelors"}
               files={files.cv}
               onChange={(f) => setF("cv", f)}
+              savedFiles={savedDocuments.filter((file) => file.document_type === "cv")}
+              onRemoveSaved={removeSavedDocument}
             />
             <FileField
               id="sop"
@@ -1004,6 +1067,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
               required
               files={files.sop}
               onChange={(f) => setF("sop", f)}
+              savedFiles={savedDocuments.filter((file) => file.document_type === "sop")}
+              onRemoveSaved={removeSavedDocument}
             />
             {(program === "masters-of-research" || program === "phd") && (
               <FileField
@@ -1013,6 +1078,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
                 required
                 files={files.researchProposal}
                 onChange={(f) => setF("researchProposal", f)}
+                savedFiles={savedDocuments.filter((file) => file.document_type === "researchProposal")}
+                onRemoveSaved={removeSavedDocument}
               />
             )}
             {program === "phd" && (
@@ -1023,6 +1090,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
                 multiple
                 files={files.publishedPapers}
                 onChange={(f) => setF("publishedPapers", f)}
+                savedFiles={savedDocuments.filter((file) => file.document_type === "publishedPapers")}
+                onRemoveSaved={removeSavedDocument}
               />
             )}
           </FormSection>
@@ -1055,6 +1124,8 @@ export default function ApplicationForm({ program, programLabel }: Props) {
               onHadChange={(v) => set("visaRefusal", v)}
               refusalFiles={files.visaRefusalLetter}
               onRefusalChange={(f) => setF("visaRefusalLetter", f)}
+              savedRefusalFiles={savedDocuments.filter((file) => file.document_type === "visaRefusalLetter")}
+              onRemoveSaved={removeSavedDocument}
             />
           </FormSection>
         </>
@@ -1066,10 +1137,15 @@ export default function ApplicationForm({ program, programLabel }: Props) {
           {error}
         </div>
       )}
+      {draftError && (
+        <div role="alert" className="rounded-xl bg-red-50 border border-red-200 px-5 py-4 text-[14px] text-red-700 leading-relaxed">
+          {draftError}
+        </div>
+      )}
       <div className="flex flex-col sm:flex-row gap-4 pt-2">
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || savingDraft}
           className="inline-flex items-center justify-center gap-2.5 h-14 px-8 bg-purple-mid text-white font-semibold rounded-xl hover:bg-purple transition text-[16px] disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? (
@@ -1086,6 +1162,15 @@ export default function ApplicationForm({ program, programLabel }: Props) {
               Submit Application
             </>
           )}
+        </button>
+        <button
+          type="button"
+          onClick={() => void saveDraft(true)}
+          disabled={loading || savingDraft}
+          className="inline-flex items-center justify-center gap-2.5 h-14 px-6 border-2 border-purple-mid text-purple-mid font-semibold rounded-xl hover:bg-plum-50 transition text-[15px] disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {savingDraft ? <LoaderCircle className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+          {savingDraft ? "Saving your application…" : "Save and continue later"}
         </button>
         <Link
           href="/apply"

@@ -2,12 +2,21 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, FolderOpen, LoaderCircle, Plus, RefreshCw } from "lucide-react";
+import { ArrowRight, FileClock, FolderOpen, LoaderCircle, Plus, RefreshCw } from "lucide-react";
 import { useAuth } from "@/components/portal/AuthProvider";
 import RequireAuth from "@/components/portal/RequireAuth";
 import StatusBadge from "@/components/portal/StatusBadge";
 import { createClient } from "@/lib/supabase/client";
-import { PROGRAM_LABELS, type Application } from "@/lib/supabase/types";
+import { PROGRAM_LABELS, type Application, type ProgramType } from "@/lib/supabase/types";
+
+type DraftSummary = {
+  id: string;
+  program_type: ProgramType;
+  program_slug: string;
+  form_data: Record<string, string>;
+  updated_at: string;
+  document_count: number;
+};
 
 export default function PortalPage() {
   return (
@@ -27,49 +36,60 @@ function formatDate(iso?: string | null): string {
 const LOAD_ERROR =
   "We could not load your applications. If the database has just been created, give it a moment and refresh.";
 
-async function fetchApplications(email: string): Promise<Application[]> {
+async function fetchApplications(userId: string): Promise<Application[]> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("applications")
     .select("*")
-    .eq("email", email)
+    .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .limit(50);
   if (error) throw error;
   return data ?? [];
 }
 
+async function fetchDrafts(): Promise<DraftSummary[]> {
+  const response = await fetch("/api/applications/drafts");
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(result.error ?? "Could not load saved applications.");
+  return result.drafts ?? [];
+}
+
 function Dashboard() {
   const { user } = useAuth();
 
   const [applications, setApplications] = useState<Application[]>([]);
+  const [drafts, setDrafts] = useState<DraftSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const email = user?.email;
+  const userId = user?.id;
 
   const load = useCallback(async () => {
-    if (!email) return;
+    if (!userId) return;
     setLoading(true);
     setError(null);
     try {
-      setApplications(await fetchApplications(email));
+      const [nextApplications, nextDrafts] = await Promise.all([fetchApplications(userId), fetchDrafts()]);
+      setApplications(nextApplications);
+      setDrafts(nextDrafts);
     } catch (err) {
       console.error("[portal] could not load applications", err);
       setError(LOAD_ERROR);
     } finally {
       setLoading(false);
     }
-  }, [email]);
+  }, [userId]);
 
   useEffect(() => {
-    if (!email) return;
+    if (!userId) return;
 
     let cancelled = false;
-    void fetchApplications(email).then(
-      (rows) => {
+    void Promise.all([fetchApplications(userId), fetchDrafts()]).then(
+      ([rows, savedDrafts]) => {
         if (cancelled) return;
         setApplications(rows);
+        setDrafts(savedDrafts);
         setError(null);
         setLoading(false);
       },
@@ -84,7 +104,7 @@ function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, [email]);
+  }, [userId]);
 
   return (
     <div className="space-y-8">
@@ -107,6 +127,40 @@ function Dashboard() {
           </Link>
         </div>
       </section>
+
+      {drafts.length > 0 && (
+        <section>
+          <div className="mb-4">
+            <h2 className="text-lg font-bold text-ink">Continue an application</h2>
+            <p className="text-[14px] text-ink-2 mt-1">Your saved progress is ready whenever you are.</p>
+          </div>
+          <ul className="space-y-3">
+            {drafts.map((draft) => (
+              <li key={draft.id}>
+                <Link
+                  href={`/apply/${draft.program_slug}`}
+                  className="flex flex-wrap items-center justify-between gap-3 border border-purple/20 rounded-xl bg-white p-5 hover:border-purple transition group"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="w-10 h-10 rounded-lg bg-plum-50 flex items-center justify-center">
+                      <FileClock className="w-5 h-5 text-purple-mid" />
+                    </span>
+                    <div>
+                      <p className="font-semibold text-ink">{PROGRAM_LABELS[draft.program_type] ?? "Application"}</p>
+                      <p className="text-[13px] text-ink-3">
+                        Saved {formatDate(draft.updated_at)}{draft.document_count ? ` · ${draft.document_count} document${draft.document_count === 1 ? "" : "s"}` : ""}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-2 text-[13px] font-semibold text-purple-mid">
+                    Continue <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Existing applications --------------------------------------------- */}
       <section>
