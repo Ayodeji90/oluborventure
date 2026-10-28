@@ -14,8 +14,8 @@ export const services: Service[] = [
     shortTitle: "Study Abroad",
     icon: "graduation",
     description:
-      "Get admitted to top universities worldwide. We guide you through the entire application process, from selection to enrollment.",
-    bullets: ["University Selection", "Application Support", "Visa Assistance"],
+      "We know which universities in the UK, Canada, and Germany are processing Nigerian applications right now — and which ones aren't. We put your application where it has the best chance.",
+    bullets: ["University Selection", "Application Strategy", "Offer Negotiation"],
   },
   {
     slug: "scholarships",
@@ -23,8 +23,8 @@ export const services: Service[] = [
     shortTitle: "Scholarships",
     icon: "money",
     description:
-      "Access fully-funded and partial scholarship opportunities. We help you find and secure financial aid for your education.",
-    bullets: ["Scholarship Search", "Essay Writing", "Application Guidance"],
+      "Most students don't hear about scholarships until they've already paid. We identify funding opportunities before you sign anything — full awards, partial grants, and combinations.",
+    bullets: ["Scholarship Matching", "Personal Statement Writing", "Application Coaching"],
   },
   {
     slug: "visa-assistance",
@@ -32,8 +32,8 @@ export const services: Service[] = [
     shortTitle: "Visa Assistance",
     icon: "plane",
     description:
-      "Navigate visa requirements with confidence. From documentation to interview prep, we make sure you're ready.",
-    bullets: ["Document Review", "Interview Prep", "Application Filing"],
+      "The visa refusal rate for Nigerian students is higher than most countries. We know the common reasons and prepare your documentation specifically to avoid them.",
+    bullets: ["Document Review", "Interview Preparation", "Refusal Prevention"],
   },
   {
     slug: "international-jobs",
@@ -41,8 +41,8 @@ export const services: Service[] = [
     shortTitle: "Intl. Jobs",
     icon: "plane",
     description:
-      "Launch your global career with our job placement services. We connect you with employers across various industries.",
-    bullets: ["Job Matching", "CV Optimization", "Interview Prep"],
+      "Getting the degree is one step. Getting hired abroad is another. We help graduates and professionals land roles across the UK, Germany, Canada, and the UAE.",
+    bullets: ["Job Matching", "CV & LinkedIn Optimisation", "Work Visa Guidance"],
   },
   {
     slug: "canada-processing",
@@ -50,7 +50,7 @@ export const services: Service[] = [
     shortTitle: "Canada",
     icon: "graduation",
     description:
-      "Your complete pathway to Canada — study permits, visitor visas, and proof-of-funds documentation, handled end to end.",
+      "Your complete pathway to Canada — study permits, visitor visas, and proof-of-funds documentation, handled end to end from Lagos.",
     bullets: ["Admissions Processing", "IRCC Visa Filing", "Proof of Funds Guidance", "Biometrics & Interview Prep"],
   },
   {
@@ -59,7 +59,7 @@ export const services: Service[] = [
     shortTitle: "French",
     icon: "language",
     description:
-      "Learn French with an experienced teacher, built for your goals — exam success, relocation readiness, or everyday fluency.",
+      "French opens doors in Canada, France, Belgium, and Switzerland. Learn with an experienced teacher — whether your goal is exam certification, relocation, or everyday fluency.",
     bullets: ["DELF / TEF Exam Prep", "Private & Group Classes", "Conversational Practice"],
   },
   {
@@ -68,7 +68,7 @@ export const services: Service[] = [
     shortTitle: "Flights",
     icon: "ticket",
     description:
-      "Get where you're going without the stress. We search the best fares, book, and back you up if plans change.",
+      "Get where you're going without the stress. We search the best fares, handle the booking, and support you if plans change — so one less thing is on your mind.",
     bullets: ["Best-Fare Search", "Booking & Ticketing", "Reschedule & Refund Support"],
   },
 ];

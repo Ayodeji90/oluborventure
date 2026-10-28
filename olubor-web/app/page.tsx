@@ -50,12 +50,12 @@ export default function Home() {
       {/* HERO: rotating plane/aviation photo, dark overlay, centered copy — Prime style */}
       <section className="relative bg-ink overflow-hidden">
         <HeroRotator />
-        <div className="absolute inset-0 bg-black/45" aria-hidden />
+        <div className="absolute inset-0 bg-black/45" aria-hidden="true" />
 
         <div className="relative flex min-h-[600px] items-center px-4 pb-16 pt-40 sm:pt-44">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-kicker hero-enter text-amber/90 mb-5">
-              Formerly Future Builders Educational Institute
+              Lagos, Nigeria · Since 2016
             </p>
             <h1 className="text-display font-statement text-white mb-6 !text-[clamp(2.25rem,4.5vw,3.75rem)] hero-enter hero-enter-delay-1">
               Study abroad, without the guesswork.
@@ -136,11 +136,11 @@ export default function Home() {
           aria-label="A proud smiling graduate in cap and gown holding a diploma on university campus"
         />
         <div className="relative overflow-hidden bg-purple text-white px-8 md:px-14 py-16 md:py-20 flex flex-col justify-center">
-          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full border border-white/10" aria-hidden />
-          <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full border border-white/10" aria-hidden />
+          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full border border-white/10" aria-hidden="true" />
+          <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full border border-white/10" aria-hidden="true" />
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-10 max-w-lg">
-            We are dependable and reliable, owned and managed student
-            placement agents in Nigeria.
+            We&apos;ve been making the case for Nigerian students since 2016.
+            In a decade of applications, only one number matters to us — yours.
           </h2>
           <CTAButton href="/about" variant="secondary">
             More About Olubor
@@ -168,7 +168,7 @@ export default function Home() {
       <section className="py-20 sm:py-24 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-title text-ink mb-4 max-w-xl">
-            Choose your best destination to study!
+            Where do you want to study?
           </h2>
           <p className="text-ink-2 max-w-2xl mb-12">
             We place students into universities across the UK and Europe, USA,
@@ -206,7 +206,7 @@ export default function Home() {
       <section className="py-24 px-4 bg-plum-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-title text-ink mb-12 text-center">
-            Our successful stories
+            Student stories
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t) => (

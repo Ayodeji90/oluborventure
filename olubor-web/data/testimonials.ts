@@ -9,22 +9,22 @@ export const testimonials: Testimonial[] = [
   {
     initials: "AO",
     name: "Adeola O.",
-    detail: "MSc Data Science, UK",
+    detail: "MSc Data Science, University of Manchester · UK",
     quote:
-      "Olubor Ventures made my dream of studying in the UK a reality. Their guidance throughout the application process was invaluable.",
+      "I was rejected twice before Olubor. Third application, UK student visa approved. The team knew exactly what went wrong — and fixed it.",
   },
   {
     initials: "CI",
     name: "Chinedu I.",
-    detail: "Full Scholarship, Canada",
+    detail: "Full Scholarship, University of Calgary · Canada",
     quote:
-      "I got a full scholarship to study in Canada! The team helped me perfect my essays and prepare for interviews. Forever grateful!",
+      "My family couldn't afford full tuition in Canada. Olubor found me a scholarship I had no idea existed — covers fees and living costs. I didn't pay a naira in tuition.",
   },
   {
     initials: "FM",
     name: "Fatima M.",
-    detail: "Software Engineer, Germany",
+    detail: "Software Engineer, Berlin · Germany",
     quote:
-      "From Nigeria to Germany — Olubor Ventures helped me land my dream job. Their career coaching and CV review were game-changers!",
+      "I came to them for university help and ended up with a job offer in Germany two years later. They helped me with both, and never made me feel like a number.",
   },
 ];

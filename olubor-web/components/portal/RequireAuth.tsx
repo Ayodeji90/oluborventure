@@ -87,7 +87,7 @@ export function SetupNotice() {
       <p className="text-[13px] text-ink-3 leading-relaxed">
         Full schema reference:{" "}
         <code className="text-[13px] bg-plum-50 px-1.5 py-0.5 rounded">
-          docs/applications-schema.md
+          supabase/migrations/001_initial.sql
         </code>
       </p>
     </div>

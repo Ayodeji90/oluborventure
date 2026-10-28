@@ -54,7 +54,7 @@ export default function Navbar() {
               </span>
             </Link>
 
-            <div className="hidden xl:flex items-center gap-0.5">
+            <div className="hidden lg:flex items-center gap-0.5">
               {links.map((l) => (
                 <Link
                   key={l.label}
@@ -72,13 +72,13 @@ export default function Navbar() {
 
             <Link
               href="/apply"
-              className="liquid-glass hidden xl:inline-flex items-center px-5 h-10 bg-purple-mid text-white text-[13px] font-semibold uppercase tracking-wide rounded-full hover:bg-purple transition"
+              className="liquid-glass hidden lg:inline-flex items-center px-5 h-10 bg-purple-mid text-white text-[13px] font-semibold uppercase tracking-wide rounded-full hover:bg-purple transition"
             >
               Get Started
             </Link>
 
             <button
-              className="xl:hidden text-ink p-2.5 -mr-2.5"
+              className="lg:hidden text-ink p-2.5 -mr-2.5"
               onClick={() => setOpen(!open)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
@@ -89,7 +89,7 @@ export default function Navbar() {
         </div>
 
         {open && (
-          <div className="xl:hidden border-t border-gray-100 bg-white/98 px-4 pb-5 pt-2 shadow-xl backdrop-blur-xl max-h-[70vh] overflow-y-auto">
+          <div className="lg:hidden border-t border-gray-100 bg-white/98 px-4 pb-5 pt-2 shadow-xl backdrop-blur-xl max-h-[70vh] overflow-y-auto">
             {links.map((l) => (
               <Link
                 key={l.label}

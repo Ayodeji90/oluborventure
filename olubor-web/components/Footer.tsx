@@ -98,7 +98,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/15 mt-14 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-sm text-white/50">
-          <p>© 2026 Olubor Ventures and Educational Consult. All Rights Reserved.</p>
+          <p>© 2016–2026 Olubor Ventures and Educational Consult. All Rights Reserved.</p>
           <div className="flex gap-6">
             <Link href="/terms" className="hover:text-white transition">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition">Privacy</Link>

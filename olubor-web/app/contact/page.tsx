@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Mail, Phone, MapPin, Clock, ArrowRight, Check } from "lucide-react";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
@@ -21,6 +22,16 @@ const services = [
 ];
 
 export default function ContactPage() {
+  return (
+    <Suspense>
+      <ContactPageInner />
+    </Suspense>
+  );
+}
+
+function ContactPageInner() {
+  const searchParams = useSearchParams();
+  const destination = searchParams.get("destination");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -203,7 +214,7 @@ export default function ContactPage() {
                   <div className="flex flex-wrap gap-2">
                     {services.map((s) => (
                       <label key={s} className="cursor-pointer">
-                        <input type="radio" name="service" value={s} className="peer sr-only" />
+                        <input type="radio" name="service" value={s} className="peer sr-only" defaultChecked={!!destination && s === "Study Abroad"} />
                         <span className="inline-flex items-center h-9 px-3.5 rounded-xl border border-plum-100 text-[13px] font-medium text-ink-2 cursor-pointer peer-checked:bg-purple-mid peer-checked:text-white peer-checked:border-purple-mid hover:border-purple-mid/50 transition">
                           {s}
                         </span>
@@ -220,6 +231,7 @@ export default function ContactPage() {
                     required
                     rows={5}
                     placeholder="Tell us about your goals, timeline, or any questions you have…"
+                    defaultValue={destination ? `I'm interested in studying in ${destination}.` : undefined}
                     className={`${inputCls} h-auto resize-none`}
                   />
                 </div>
